@@ -19,6 +19,7 @@ module.exports = {
                 City:'',
                 Area:''
             },
+            changeFlag:true,
             speManager_list: [], //用户列表数组
             spe_data:{},
             Category:[],
@@ -73,6 +74,29 @@ module.exports = {
                     message : '专家类别不能为空！',
                     trigger : 'blur'
                 }],
+                TEL:[{
+                     validator:(rule, value, callback)=>{
+                        if (!/^[0-9]*$/.test(value)) {
+                            callback(new Error('输入格式不正确，仅支持全数字'));
+                        }else if(value.length!=11){
+                            callback(new Error('输入的手机号应为11位'));
+                        } else {
+                            callback();
+                        }
+                    },
+                    trigger: 'blur'
+                }],
+                MailBox:[{
+                    validator:(rule, value, callback)=>{
+                        if (!/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value)) {
+                            callback(new Error('邮箱格式不对，请重新输入'));
+                        }else {
+                            callback();
+                        }
+                    },
+                    trigger: 'blur'
+                }],
+
             },
             //搜索表单信息
             search_data: {
@@ -168,8 +192,12 @@ module.exports = {
                 var hh = JSON.parse(res.request.response);
                  _this.expert_list = hh.data;
                  _this.area_data.Province = hh.data.BelongToMeteorology[0];
-                 _this.area_data.City = hh.data.BelongToMeteorology[1];
-                 _this.area_data.Area = hh.data.BelongToMeteorology[2];
+                 if(hh.data.BelongToMeteorology[1]){
+                    _this.area_data.City = hh.data.BelongToMeteorology[1];
+                 };
+                 if(hh.data.BelongToMeteorology[2]){
+                    _this.area_data.Area = hh.data.BelongToMeteorology[2]; 
+                 } 
             });
         },
         handleAvatarSuccess(res, file) {
@@ -187,8 +215,8 @@ module.exports = {
                             message  : "修改成功",
                             type     : 'success'
                         });
-                        // speManager_list.splice(index, 1);
-                         window.location.reload();
+                        _this.showAdd = false;
+                        _this.getExpert();
                     }else{
                          this.$message({
                             showClose: true,
@@ -206,8 +234,10 @@ module.exports = {
             this.axios.post("/index.php?r=AuthCenter/expert-manage/get-all",{pagesize:_this.pageSize,pagenum:1})
             .then((res) => {  
             var hh = JSON.parse(res.request.response);
+            if(hh.status==200){
                 _this.speManager_list = hh.data.ExpertList;
                 _this.totalNum = parseInt(hh.data.total);
+                }
             });
         },
         handleCurrentChange(val){
@@ -363,7 +393,6 @@ module.exports = {
             });
         },
         handlePreview(file){
-            alert(1);
             alert(file.response);
         },
         upSuccess(response, file, fileList){

@@ -7,7 +7,7 @@ module.exports = {
           //  editData:[],
             theKey:'',
             editData:{
-                ProductApproModelId:'',
+                ProductApproModelId:"",
                 ModelName: "",
                 ModelType: "",
                 ProductNumber: "",
@@ -153,6 +153,10 @@ module.exports = {
                     element:[]
                 };
             this.Growth_data.push(list);
+            var height = 55*(this.elements.length+1);
+            this.$nextTick(function(){
+                $(".addBear").height(height);
+            });
         },
         cloneUpDiv(){
             var item = {
@@ -162,7 +166,10 @@ module.exports = {
                     elementValue:[],
             };
             this.Growthperiod.push(item);
-                    //   alert(1);
+            var height = 55*(this.elements.length+1);
+            this.$nextTick(function(){
+                $(".updateBear").height(height);
+            });
         },
          deleteDiv(index){
           this.Growth_data.splice(index,1);
@@ -173,6 +180,7 @@ module.exports = {
         onAdd(){
             this.addChild = true;
             this.showList = false;
+            this.showEdit = false;
             this.Growth_data = [];
             this.submit_data = [];
          },
@@ -224,27 +232,34 @@ module.exports = {
             });*/
         },
          showUpdate(productObj){
-            this.addChild = false;
-            this.showList = false;
-            this.showEdit = true;
-             let _this = this;
-                this.axios.post('/index.php?r=AuthModel/formulate-modle/edit-view',{ProductApproModelId:productObj.ProductApproModelId})
-                .then((res)=>{
-                   var hh = JSON.parse(res.request.response);
-                    _this.editData = hh.data.Modelformulate;
-                   // _this.oldGrowth = hh.data.Growthperiod;
-                    _this.Growthperiod = hh.data.Growthperiod;
-            });
+            this.Growth_data = [];
+            this.submit_data = [];
+            var _this = this;
+            this.axios.post('/index.php?r=AuthModel/formulate-modle/edit-view',{ProductApproModelId:productObj.ProductApproModelId})
+            .then((res)=>{
+               var hh = JSON.parse(res.request.response);
+               if(hh.status==200){
+                _this.Growthperiod = hh.data.Growthperiod;
+                _this.editData = hh.data.Modelformulate;
 
+                _this.showEdit = true;
+                _this.addChild = false;
+                _this.showList = false;
+                var height = 55*(_this.elements.length+1);
+                this.$nextTick(function(){
+                    $(".updateBear").height(height);
+                 });
+               }else{
+                   this.$message({
+                            showClose: true,
+                            message  : hh.msg,
+                            type     : 'error'
+                    });
+               }
+            });
+           //$(".updateBear").height(height);
          },
          choose(index,number){
-           /* var parent = this.Growthperiod[index].growthElemId;
-            for(var i = 0; i<parent.length;i++)
-            {
-                if(number.trim()==parent[i].trim()){
-                    return true;
-                }
-            }*/
              var parent = this.Growthperiod[index].elementNumber;
             for(var i = 0; i<parent.length;i++)
             {
@@ -257,13 +272,17 @@ module.exports = {
          putValue(index,number){
             var parent = this.Growthperiod[index].elementNumber;
             var value = this.Growthperiod[index].elementValue;
-            for(var i = 0; i<parent.length;i++)
-            {
-                if(number.trim()==parent[i].trim()){
-                    return value[i];
+            if(parent && value){
+                for(var i = 0; i<parent.length;i++)
+                {
+                    if(number.trim()==parent[i].trim()){
+                      return value[i];
+                    } 
                 }
+                return " ";
+            }else{
+                 return " ";
             }
-            return "";
          },
          getEleId(index,number){
             var parent = this.Growthperiod[index].elementNumber;
@@ -287,16 +306,18 @@ module.exports = {
                 .then((res)=>{
                      var hh = JSON.parse(res.request.response);
                      _this.elements = hh.data;
+
                 });
                  this.axios.post('/index.php?r=AuthModel/formulate-modle/get-type')
                 .then((res)=>{
                      var hh = JSON.parse(res.request.response);
                      _this.product_type = hh.data;
                 });
+
                 this.axios.post('/index.php?r=AuthModel/formulate-modle/view-product')
                 .then((res)=>{
-                     var hh = JSON.parse(res.request.response);
-                     _this.product_list = hh.data;
+                    var hh = JSON.parse(res.request.response);
+                    _this.product_list = hh.data;
                 });
         },
         initRouters(){
@@ -496,12 +517,12 @@ module.exports = {
 
     mounted() {
         this.getBearEle();
-        this.getTheMenu();
-        this.initRouters();
+       
+        $(".addBear").css('border','1px solid red');
+         $(".addBear").css('height','300');
     },
     watch: {
         '$route' (to, from) {
-            this.getTheMenu();
         }
     }
 }

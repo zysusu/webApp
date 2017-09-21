@@ -5,7 +5,7 @@
             <el-form :inline="true" :model='search_data' class="demo-form-inline">
                 <el-form-item label="请输入要查找的产品名称">
                     <el-input
-                        v-model='search_data.username'
+                        v-model='search_data.Name'
                         clear></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -13,7 +13,6 @@
                 </el-form-item>
           </el-form>
         </el-col>
-
    <el-table
     v-if="!showAll"
     :data="applica"
@@ -79,23 +78,13 @@
       </template>
     </el-table-column>
   </el-table>
-
-  <div class="block" v-show="!showAll" style="margin:20px 35px; float:right;">
-     <el-pagination
-        layout="total,prev, pager, next"
-        :page-size="pageSize"
-        :total="totalNum"
-        @current-change='handleCurrentChange'>
-      </el-pagination>
-  </div> <!--  分页的div -->
-
    <el-row>
       <el-col v-if="showAll" :span="24">
         <!-- 企业信息 -->
         <el-card :body-style="{ padding: '0px' }">
               <header class="infoTop">企业信息</header>
             <el-form
-                  label-width="100px" 
+                  label-width="140px" 
                   :model="applyData">
               <div class="info1">
                   <el-form-item class='edit-form' 
@@ -163,7 +152,7 @@
       <el-card :body-style="{ padding: '0px' }">
             <header class="infoTop">产地信息</header>
             <el-form
-                  label-width="100px" 
+                  label-width="140px" 
                   :model="applyData">
               <div class="info1">
                   <el-form-item class='edit-form' 
@@ -255,7 +244,7 @@
       <el-card :body-style="{ padding: '0px' }">
             <header class="infoTop">申报产品情况</header>
                       <el-form
-                  label-width="100px" 
+                  label-width="140px" 
                   :model="applyData">
               <div class="info1">
                   <el-form-item class='edit-form' 
@@ -408,7 +397,7 @@
           <header class="infoTop">专家意见</header>
           <el-form 
                 style="padding:8px 15px;"
-                label-width="125px" 
+                label-width="140px" 
                 :model="applyData">
             <div class="info1">
                 <el-form-item class='edit-form' 
@@ -479,6 +468,14 @@
       <!-- 审核的省级专家意见结束 -->
     </el-col>
   </el-row>
+   <div class="block" v-show="!showAll" style="margin:20px 35px; float:right;">
+     <el-pagination
+        layout="total,prev, pager, next"
+        :page-size="pageSize"
+        :total="totalNum"
+        @current-change='handleCurrentChange'>
+      </el-pagination>
+  </div> <!--  分页的div -->
 </div>
 </div>
 </template>
@@ -523,5 +520,10 @@ label{
 .btn{
   background-color: transparent;
   border:none;
+  margin-top: 26px;
+}
+.el-card{
+  background-color: rgb(249, 249, 249);
+  margin-bottom: 10px;
 }
 </style>

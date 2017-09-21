@@ -10,7 +10,6 @@
         </el-steps>
         <br><br>
         <!-- <el-progress type="circle" :percentage="num" @click="addNum()"></el-progress> -->
-
         <el-form :rules="rules" :model="Apply" label-width="105px">
         <!-- //step 1 class="demo-form-inline"-->
         <div v-if="step==1" style="width:100%;">
@@ -51,8 +50,8 @@
             </el-form-item>
             <!-- <br> -->
             </div>
-            <div class="info1">
-            <el-form-item prop="applicationType" label="申请人类型：">
+            <div class="info1" style="width: auto; overflow-x: visible;">
+            <el-form-item prop="applicationType" label="申请人类型：" >
                 <el-checkbox-group
                 v-model="Apply.applicationType"
                 >
@@ -183,8 +182,10 @@
             <el-form-item prop="ProductName" label="产品名称：">
               <el-input v-model="Apply.ProductName" placeholder="产品名称"></el-input>
             </el-form-item>
+            
             <el-form-item prop="commodityType" style="text-align:left;" label="产品类别：">
-                <el-cascader change-on-select :show-all-levels="false"
+               <!--  :show-all-levels="false" -->
+                <el-cascader change-on-select
                  :options="productType"
                  :props="typeProps" v-model="Apply.commodityType">
                 </el-cascader>
@@ -200,7 +201,7 @@
             </el-form-item>
             <!-- <br> -->
             <el-form-item prop="ProdutOutput" label="产量：">
-                <el-input @change="checkNum" v-model="Apply.ProdutOutput" placeholder="产量"></el-input>
+                <el-input v-model="Apply.ProdutOutput" placeholder="产量"></el-input>
             </el-form-item>
           
              <el-form-item prop="ControlImplement" label="气候控制措施：">
@@ -212,7 +213,7 @@
             </div>
             <div class="info2">
              <el-form-item prop="OutputValue" label="产值：">
-                <el-input @change="checkNum" v-model="Apply.OutputValue" placeholder="产值"></el-input>
+                <el-input v-model="Apply.OutputValue" placeholder="产值"></el-input>
             </el-form-item>
             <!-- <br> -->
             <el-form-item prop="scale" label="规模：">
@@ -225,19 +226,18 @@
 
             <!-- <br> -->
             <el-form-item prop="Number" label="标签数量：">
-                <el-input @change="checkNum" v-model="Apply.Number" placeholder="标签数量"></el-input>
+                <el-input v-model="Apply.Number" placeholder="标签数量"></el-input>
             </el-form-item>
 
             <el-form-item prop="ApplyOriginType" style="text-align:left;" label="申请类别：">
                 <el-radio-group v-model="Apply.ApplyOriginType">
                     <!-- <el-radio v-for="applyType in applyTypes"
                     :label="applyType.CuitMoon_DictionaryCode">{{applyType.CuitMoon_DictionaryName}}</el-radio> -->
-                    <el-radio
-                    value="1000161">气候品质认证</el-radio>
+                  <el-radio
+                    :label="1000161">气候品质认证</el-radio>
                   </el-radio-group>
                 <!-- <el-input v-model="Apply.ApplyOriginType" placeholder="申请类别"></el-input> -->
             </el-form-item>
-
             <!-- <br> -->
             <el-form-item prop="inTotal" label="费用：">
                 <el-input v-model="Apply.inTotal"  disabled></el-input>

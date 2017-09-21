@@ -5,6 +5,7 @@
             <el-table
               :data="tableData"
               stripe
+              border
               style="min-width: 100%">
               <el-table-column
                 prop="productName"
@@ -28,7 +29,7 @@
                 <template scope="scope">
                       <el-button
                       size="small"
-                      type="primary"
+                      type="info"
                       @click="findProcess(scope.$index,tableData)">查询</el-button>
                 </template>
               </el-table-column>
@@ -56,15 +57,17 @@
                       @click="weatherManage(scope.$index,tableData)">管理</el-button>
                 </template>
               </el-table-column>
-
             </el-table>
+
+          <div class="block" style="margin:20px 35px; float:right;">
             <el-pagination
-            layout="prev, pager, next"
+            layout="total,prev, pager, next"
             :total="total"
             :current-page="pagenum"
             @current-change="getData"
             :page-size="pagesize">
             </el-pagination>
+          </div>
         </div>
     <!-- 图片采集 -->
             <div class="block" v-if="active==2 || active==3">
@@ -102,13 +105,13 @@
 
                 <el-button
                 size="small"
-                type="danger"
+                type="primary"
                 @click="active=1">返回</el-button>
 
                 <el-button
                 v-if="active==2"
                 size="small"
-                type="primary"
+                type="info"
                 @click="addBtn">添加</el-button>
 
                 <el-button
@@ -217,9 +220,9 @@
             </el-table>
 
             <el-dialog title="添加图片" :visible.sync="dialogTableVisible">
-                <el-form :label-position="labelPosition" label-width="80px" :model="Prictureinfomation">
+                <el-form :label-position="labelPosition" label-width="110px" :model="Prictureinfomation">
 
-                    <el-form-item label="生长周期">
+                    <el-form-item label="生长周期：">
                         <el-select v-model="Prictureinfomation.cropGrowthPeriod" placeholder="请选择">
                            <el-option
                              v-for="item in bearing"
@@ -230,7 +233,7 @@
                          </el-select>
                     </el-form-item>
 
-                    <el-form-item label="地区">
+                    <el-form-item label="地区：">
                         <el-cascader
                         v-model="activeArea"
                         :options="dataOrigin"
@@ -241,7 +244,7 @@
                         <!-- <el-input v-model="Prictureinfomation.DataOrigin"></el-input> -->
                     </el-form-item>
 
-                    <el-form-item label="数据来源">
+                    <el-form-item label="数据来源：">
                         <el-select v-model="Prictureinfomation.DataOrigin" placeholder="请选择">
                            <el-option
                              v-for="item in DataOrigins"
@@ -252,7 +255,7 @@
                          </el-select>
                     </el-form-item>
 
-                    <el-form-item label="采集时间">
+                    <el-form-item label="采集时间：">
                         <el-date-picker
                           v-model="Prictureinfomation.CollectionTime"
                           type="datetime"
@@ -262,7 +265,7 @@
                         </el-date-picker>
                     <!-- <el-input v-model="Prictureinfomation.CollectionTime"></el-input> -->
                     </el-form-item>
-                    <el-form-item label="图片">
+                    <el-form-item label="图片：">
                         <el-upload
                           class="avatar-uploader"
                           :action="imageAction"
@@ -273,18 +276,16 @@
                           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                     </el-form-item>
-                    <el-form-item label="备注">
-                    <el-input v-model="Prictureinfomation.Remark"></el-input>
+                    <el-form-item label="备注：">
+                    <el-input style="width:450px;" v-model="Prictureinfomation.Remark"></el-input>
                     </el-form-item>
                 </el-form>
               <br>
               <el-button
-              :plain="true"
               type="success"
               v-if="addPic"
               @click="addPicSave">添加图片</el-button>
               <el-button
-              :plain="true"
               type="success"
               v-else="addPic"
               @click="updatePicSave">修改</el-button>
@@ -296,7 +297,7 @@
                 <el-form :label-position="labelPosition" label-width="80px" :model="Disastoursdata">
 
 
-                    <el-form-item label="地区">
+                    <el-form-item label="地区：">
                         <el-cascader
                         v-model="activeArea"
                         :options="dataOrigin"
@@ -307,7 +308,7 @@
                         <!-- <el-input v-model="Prictureinfomation.DataOrigin"></el-input> -->
                     </el-form-item>
 
-                    <el-form-item label="数据来源">
+                    <el-form-item label="数据来源：">
                         <el-select v-model="Disastoursdata.DataOrigin" placeholder="请选择">
                            <el-option
                              v-for="item in DataOrigins"
@@ -318,27 +319,24 @@
                          </el-select>
                     </el-form-item>
 
-                    <el-form-item label="气象灾害描述">
+                    <el-form-item label="气象灾害描述：">
                         <el-input v-model="Disastoursdata.DisastoursDescription"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="备注">
+                    <el-form-item label="备注：">
                         <el-input v-model="Disastoursdata.Remark"></el-input>
                     </el-form-item>
                 </el-form>
               <br>
               <el-button
-              :plain="true"
-              type="success"
+              type="info"
               v-if="addWeather"
               @click="addWeatherSave">添加</el-button>
               <el-button
-              :plain="true"
               type="success"
               v-else="addWeather"
               @click="updateWeatherSave">修改</el-button>
             </el-dialog>
-
         </div>
 </template>
 <script>

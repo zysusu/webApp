@@ -12,7 +12,7 @@
     text-align: center;
     margin-top: 150px;
     /*font-style: italic;*/
-    font-family: "华文新魏";
+    font-family: "华文新魏" !important;
     color:#0582d2;
 }
 </style>

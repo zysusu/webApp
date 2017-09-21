@@ -1,92 +1,24 @@
 <template>
     <div class="backGround" :style="winSize">
-    <div class="wrap">
+    <div class="wrap" id="google_translate_element">
         <el-row>
             <el-col :span='24'>
-            <img class="topImg" src="../../assets/logo1.jpg"/>
-
-                 <!-- 产地信息 -->
-      <!--   <el-card class="dataCard" :body-style="{ padding: '0px' }">
-            <header class="infoTop">标签信息</header>
-            <el-form 
-                style="padding:8px 15px;" 
-                :model="localInfo">
-                <el-form-item class='edit-form' 
-                    :disabled='true'
-                    label="标签查询码：" 
-                    prop='Origin_Situation'>
-                 {{localInfo.Origin_Situation}}
-                </el-form-item>
-                <el-form-item class='edit-form' 
-                    label="标签状态：" 
-                    prop='Meteorological_Disaster'>
-                       {{localInfo.Meteorological_Disaster}}
-                </el-form-item>
-                <el-form-item class='edit-form' 
-                    label="标签规格：" 
-                    prop='Diseases_InsectPests'>
-                      {{localInfo.Diseases_InsectPests}}
-                </el-form-item>
-                <el-form-item class='edit-form' 
-                    :disabled='true'
-                    label="被扫描的次数：" 
-                    prop='Origin_Situation'>
-                 {{localInfo.Origin_Situation}}
-                </el-form-item>
-                <el-form-item class='edit-form' 
-                    label="第一次扫描的时间：" 
-                    prop='Meteorological_Disaster'>
-                       {{localInfo.Meteorological_Disaster}}
-                </el-form-item>
-                <el-form-item class='edit-form' 
-                    label="地点：" 
-                    prop='Diseases_InsectPests'>
-                      {{localInfo.Diseases_InsectPests}}
-                </el-form-item>
-                <el-form-item class='edit-form' 
-                    label="第二次扫描的时间：" 
-                    prop='Diseases_InsectPests'>
-                      {{localInfo.Diseases_InsectPests}}
-                </el-form-item>
-                <el-form-item class='edit-form' 
-                    :disabled='true'
-                    label="地点：" 
-                    prop='Origin_Situation'>
-                 {{localInfo.Origin_Situation}}
-                </el-form-item>
-                <el-form-item class='edit-form' 
-                    label="最后一次扫描的时间：" 
-                    prop='Meteorological_Disaster'>
-                       {{localInfo.Meteorological_Disaster}}
-                </el-form-item>
-                <el-form-item class='edit-form' 
-                    label="地点：" 
-                    prop='Diseases_InsectPests'>
-                      {{localInfo.Diseases_InsectPests}}
-                </el-form-item>
-                <el-form-item class='edit-form' 
-                    label="该批次共发放溯源标签：" 
-                    prop='Diseases_InsectPests'>
-                      {{localInfo.Diseases_InsectPests}}
-                </el-form-item>
-                 <span>请检查产品外包装二维码下方的防伪码是否与本页“标签查询码”相同，或登录四川农村信息网溯源网站http://zs.scnjw.gov.cn 进行输码查询以辨别标签真伪。</span>
-         </el-form>
-        </el-card> -->
-
+            <img v-if="typeFlag==0" class="topImg" src="../../assets/logo1.jpg"/>
+            <img v-else class="topImg" src="../../assets/logo2.jpg"/>
         <el-card class="dataCard" :body-style="{ padding: '0px' }">
             <header class="infoTop">标签信息</header>
             <form style="padding:6px 10px; padding-bottom: 0px; margin-bottom: 0px;" >
                 <span class="myRow"><label class="Label">标签查询码：</label>{{labelInfo.LabelQueryID}}</span>
                 <span class="myRow"><label class="Label">标签状态：</label>{{labelInfo.LabelStatus}}</span>
                 <span class="myRow"><label class="Label">标签规格：</label>{{labelInfo.format}}</span>
-                <span class="myRow"><label class="Label">被扫描的次数：</label>{{labelInfo.labelNum}}</span>
-                 <span class="myRow"><label class="Label">第一次扫描的时间：</label>{{firstTime.ScanTime}}</span>
-                <span class="myRow"><label class="Label">地点：</label>{{firstTime.ScanPlace}}</span>
-                <span class="myRow"><label class="Label">第二次扫描的时间：</label>{{secondTime.ScanTime}}</span>
-                <span class="myRow"><label class="Label">地点：</label>{{secondTime.ScanPlace}}</span>
-                <span class="myRow"><label class="Label">最后一次扫描的时间：</label>{{Last.ScanTime}}</span>
-                <span class="myRow"><label class="Label">地点：</label>{{Last.ScanPlace}}</span>
-                <span class="myRow"><label class="Label">该批次共发放溯源标签：</label>{{labelInfo.format}}枚</span>
+                <span class="myRow"><label class="Label">被扫描的次数：</label>{{labelInfo.ScanNum}}</span>
+                 <span class="myRow"><label class="Label">第一次扫描的时间：</label><div v-cloak>{{firstTime.ScanTime}}</div></span>
+                <span class="myRow"><label class="Label">地点：</label><div v-cloak>{{firstTime.ScanPlace}}</div></span>
+                <span class="myRow"><label class="Label">第二次扫描的时间：</label><div v-cloak>{{secondTime.ScanTime}}</div></span>
+                <span class="myRow"><label class="Label">地点：</label><div v-cloak>{{secondTime.ScanPlace}}</div></span>
+                <span class="myRow"><label class="Label">最后一次扫描的时间：</label><div v-cloak>{{Last.ScanTime}}</div></span>
+                <span class="myRow"><label class="Label">地点：</label><div v-cloak>{{Last.ScanPlace}}</div></span>
+                <span class="myRow"><label class="Label">该批次共发放溯源标签：</label>{{labelInfo.labelNum}}枚</span>
                 <p>*请检查产品外包装二维码下方的防伪码是否与本页“标签查询码”相同，或登录四川农村信息网溯源网站http://zs.scnjw.gov.cn 进行输码查询以辨别标签真伪。</p>
          </form>
         </el-card>
@@ -105,7 +37,14 @@
          </form>
         </el-card>
             <!-- 产品信息 -->
-        <el-card class="dataCard" :body-style="{ padding: '0px' }">
+    <section class="chart">
+        <el-row>
+            <el-col v-for="(item,index) in LineDiv" :span="24">
+                <div :id="LineImg+index" style="width:96%; height:310px !important;"></div>
+            </el-col>
+        </el-row>
+    </section>
+    <!--  <el-card class="dataCard" :body-style="{ padding: '0px' }">
             <header class="infoTop">品质认证</header>
             <form style="padding:6px 10px;" >
                 <span class="myRow"><label class="Label">产品名称：</label>23113</span>
@@ -115,16 +54,21 @@
                 <span class="myRow"><label class="Label">认证机构：</label>23113</span>
                 <span class="myRow"><label class="Label">认证结论：</label>23113</span>
          </form>
+        </el-card> -->
+         <el-card class="dataCard" :body-style="{padding: '0px' }">
+            <header class="infoTop">相关资质证书</header>
+            <img v-for="item in ProductPlaceImg" class="imgClass" :src="imgUrl+item"/>
         </el-card>
-
-    <section class="chart">
-        <el-row>
-            <el-col v-for="(item,index) in LineDiv" :span="24">
-                <div :id="LineImg+index" style="width:96%; height:310px !important;"></div>
-            </el-col>
-        </el-row>
-    </section>
-    
+        <el-card v-if="typeFlag==0" class="dataCard" :body-style="{padding: '0px' }">
+            <header class="infoTop">品质认证</header>
+            <img v-if="ReportInfo.certificateImage" class="imgClass" :src="imgUrl+ReportInfo.certificateImage"/>
+            <span class="myRow" style="margin-left: 10px;"><label class="Label">认证单位：</label>{{ReportInfo.ApproveAgency}}</span>
+            <span class="myRow" style="margin-left: 10px;"><label class="Label">认证结论：</label>{{ReportInfo.ApproveConclusion}}</span>
+        </el-card>
+        <el-card v-if="typeFlag==0" class="dataCard" :body-style="{padding: '0px' }">
+            <header class="infoTop">产地照片</header>
+            <img v-for="item in ProductPlaceImg" class="imgClass" :src="imgUrl+item"/>
+        </el-card>
     </el-col>
     </el-row>
         <div class="footer">
@@ -145,4 +89,12 @@
 
 <style scoped lang='less'>
     @import url(CodePage.less);
+    .imgClass{
+        margin:10px auto;
+        width:80%;
+        margin-left:10%;
+    }
+[v-cloak] {
+  display: none;
+}
 </style>

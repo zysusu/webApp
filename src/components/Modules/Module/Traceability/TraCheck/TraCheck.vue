@@ -23,7 +23,7 @@
     border
     style="width: 100%">
     <el-table-column
-      prop="ProductValue"
+      prop="OriginName"
       label="产品名称"
       align='center'>
     </el-table-column>
@@ -57,6 +57,7 @@
       <template scope="scope">
             <el-button
             size="small"
+            type="warning"
             @click="showInfo(scope.row)">审核</el-button>
       </template>
     </el-table-column>
@@ -73,6 +74,7 @@
       </template>
     </el-table-column>
   </el-table>
+<el-row>
 <div class="block" v-show="!showCheck && !searchFlag" style="margin:20px 35px; float:right;">
      <el-pagination
         layout="total,prev, pager, next"
@@ -81,14 +83,15 @@
         @current-change='handleCurrentChange'>
       </el-pagination>
 </div> <!--  分页的div -->
-  <div class="block" v-show="!showCheck && searchFlag" style="margin:20px 35px; float:right;">
+<div class="block" v-show="!showCheck && searchFlag" style="margin:20px 35px; float:right;">
      <el-pagination
         layout="total,prev, pager, next"
         :page-size="pageSize"
         :total="totalNum"
         @current-change='handleCurrentChange2'>
       </el-pagination>
-  </div> <!--  分页的div -->
+</div> <!--  分页的div -->
+</el-row>
 
    <el-row v-if="showCheck">
       <el-col :span="24">
@@ -167,18 +170,38 @@
               </div>
           </div>
         </el-card>
-
-       <el-card :body-style="{ padding: '0px' }">
-          <div>
-            <header class="infoTop">已获得的资质，认证，荣誉，注册商标</header>
-      <div style="padding: 14px;" class="bottom">
-       <table class="picTable">
-          <tr><th>证书图片</th><th>证书名称</th><th>颁发机构</th><th>获得时间</th></tr>
-          <tr><td><img src='' alt="证书照片"/></td><td></td><td></td><td></td></tr>
-       </table>
-      </div>
-         </div>
-     </el-card>
+     <el-card :body-style="{ padding: '0px' }">
+        <header class="infoTop">已获得的资质，认证，荣誉，注册商标</header>
+         <el-table
+              :data="tableData"
+              text-align="center"
+              border
+              stripe
+              style="min-width: 100%">
+              <el-table-column
+                label="证书图片"
+                min-width="20%">
+                <template scope="scope">
+                    <img v-if="scope.row.picUrl" :src="imageSrc+scope.row.picUrl" class="avatar">
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Name"
+                label="证书名称"
+                min-width="20%">
+              </el-table-column>
+              <el-table-column
+                prop="publishUnit"
+                label="颁发机构"
+                min-width="20%">
+              </el-table-column>
+              <el-table-column
+                prop="awardTime"
+                label="获得时间"
+                min-width="20%">
+              </el-table-column>
+            </el-table>
+      </el-card>
 
       <el-card :body-style="{ padding: '0px' }">
         <div>
@@ -204,16 +227,21 @@
                       <el-input
                               v-model="opinion.Advice"></el-input>
                   </el-form-item>
-                   <el-form-item style="width:100%; margin-top: 20px; text-align: right;">
+                   <!-- <el-form-item style="width:100%; margin-top: 20px; text-align: center;">
                       <el-button type="success" @click='save_info(opinion,"通过")'>通过</el-button>
-                      <!-- <el-button type="primary"
-                                 @click='reBack()'>退回</el-button> -->
                       <el-button type="danger" @click='save_info(opinion,"不通过")'>不通过</el-button>
                       <el-button type="primary"
                                  @click='reBack()'>返回</el-button>
-              </el-form-item>
+                    </el-form-item> -->
               </span>
             </el-form>
+              <div style="width:100%; margin: 20px; margin-bottom: 30px;
+              float:left; text-align: center;">
+                 <el-button type="success" @click='save_info(opinion,"通过")'>通过</el-button>
+                      <el-button type="danger" @click='save_info(opinion,"不通过")'>不通过</el-button>
+                      <el-button type="primary"
+                                 @click='reBack()'>返回</el-button>
+              </div>
            </div>
            </div>
          </el-card>
@@ -252,6 +280,12 @@
     width:46%;
     min-width:300px;
 }
+.info3{
+  width:100%;
+  margin:20px;
+  text-align: center;
+  float:left;
+}
 .infoTop{
     height:40px;
     background-color: #96CB33;
@@ -264,4 +298,7 @@
     .edit-form{
         width:500px;
     }
+.el-card{
+  margin-bottom: 10px;
+}
 </style>

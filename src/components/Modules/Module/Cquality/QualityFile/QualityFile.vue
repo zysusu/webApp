@@ -67,22 +67,6 @@
       </template>
     </el-table-column>
   </el-table>
-  <div class="block" v-show="!showChild && !lookAll && !searchFlag" style="margin:20px 35px; float:right;">
-     <el-pagination
-        layout="total,prev, pager, next"
-        :page-size="pageSize"
-        :total="totalNum"
-        @current-change='handleCurrentChange'>
-      </el-pagination>
-     </div> <!--  分页的div -->
-<div class="block" v-show="!showChild && !lookAll && searchFlag" style="margin:20px 35px; float:right;">
-  <el-pagination
-        layout="total,prev, pager, next"
-        :page-size="pageSize"
-        :total="totalNum"
-        @current-change='handleCurrentChange2'>
-   </el-pagination>  
-</div> <!--  分页的div -->
 
     <!-- 查看页面 -->
      <el-row>
@@ -437,9 +421,10 @@
          <el-form-item class='edit-form' 
                 label="认证报告：" 
                 prop='certificateAttachment'>
+                 <el-button size="small" type="primary" @click="downLoad()">点击下载</el-button>
               <!--   <a :href="imageSrc+fileInfomation.certificateAttachment" target="_blank">{{fileInfomation.certificateAttachment}}</a> -->
              <el-upload
-             style="margin-top: -40px;"
+                style="margin-top: -40px;"
                 class="upload-demo"
                 :action="imgAction"
                 :file-list="fileList1">
@@ -467,6 +452,22 @@
         </el-card>
       </el-col>
     </el-row>
+<div class="block" v-show="!showChild && !lookAll && !searchFlag" style="margin:20px 35px; float:right;">
+     <el-pagination
+        layout="total,prev, pager, next"
+        :page-size="pageSize"
+        :total="totalNum"
+        @current-change='handleCurrentChange'>
+      </el-pagination>
+     </div> <!--  分页的div -->
+     <!-- <div class="block" v-show="!showChild && !lookAll && searchFlag" style="margin:20px 35px; float:right;">
+     <el-pagination
+        layout="total,prev, pager, next"
+        :page-size="pageSize"
+        :total="totalNum"
+        @current-change='handleCurrentChange2'>
+    </el-pagination>
+</div> --> <!--  分页的div -->
 </div>
 </div>
 </template>

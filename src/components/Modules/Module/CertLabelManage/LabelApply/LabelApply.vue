@@ -1,10 +1,13 @@
 <template>
-<!-- 数据展示 -->
 <div>
-	<el-select v-model="type" @change="typeChange" placeholder="请选择" v-if="active==1">
+	<el-form v-if="active==1" :inline="true" style="margin-left: 30px; margin-bottom: 0px;" :model="formInline" class="demo-form-inline">
+	  <el-form-item label="认证类型：">
+	   <el-select v-model="type" @change="typeChange" placeholder="请选择" v-if="active==1">
 		<el-option v-for="item in applyType" :key="item.CuitMoon_DictionaryCode" :label="item.CuitMoon_DictionaryName" :value="item.CuitMoon_DictionaryCode">
 		</el-option>
-	</el-select>
+	 </el-select>
+	  </el-form-item>
+	</el-form>
 
 	<div style="width:100%" v-if="active==1" >
 		<el-table :data="productsData" stripe style="min-width: 100%">
@@ -20,7 +23,7 @@
 				<template scope="scope">
                        <el-button
                        size="small"
-                       type="primary"
+                       type="warning"
                        @click="addApply(scope.$index,productsData)">申请</el-button>
                  </template>
 			</el-table-column>
@@ -44,21 +47,30 @@
 			</el-table-column>
 
 		</el-table>
-		<el-pagination layout="prev, pager, next" :total="total" :current-page="pagenum"
+		<!-- <el-pagination layout="prev, pager, next" :total="total" :current-page="pagenum"
 		@current-change="getProducts" :page-size="pagesize">
-		</el-pagination>
-		<el-dialog title="申请" :visible.sync="dialogTableVisible">
-			<el-form :label-position="labelPosition" label-width="80px" :model="Labelapplication">
-			<el-form-item label="申请数量">
+		</el-pagination> -->
+	<div class="block" style="margin:20px 35px; float:right;">
+     <el-pagination
+        layout="total,prev, pager, next"
+        :page-size="pagesize"
+        :total="total"
+        :current-page="pagenum"
+        @current-change='getProducts'>
+      </el-pagination>
+    </div> <!--  分页的div -->
+		<el-dialog title="申请标签" :visible.sync="dialogTableVisible">
+			<el-form :label-position="labelPosition" label-width="100px" :model="Labelapplication">
+			<el-form-item label="申请数量：">
 			<el-input v-model="Labelapplication.inTotal"></el-input>
 			</el-form-item>
-			<el-form-item label="申请批次">
+			<el-form-item label="申请批次：">
 			<el-input v-model="Labelapplication.piCi"></el-input>
 			</el-form-item>
-			<el-form-item label="标签规格">
+			<el-form-item label="标签规格：">
 			<el-input v-model="Labelapplication.Format"></el-input>
 			</el-form-item>
-			<el-form-item label="示例图片">
+			<el-form-item label="示例图片：">
 			<el-upload
 			  class="avatar-uploader"
 			  :action="imageAction"
@@ -70,22 +82,19 @@
 			</el-upload>
 			</el-form-item>
 
-			<el-form-item label="申请理由">
-			<el-input v-model="Labelapplication.ApplyReason"></el-input>
+			<el-form-item label="申请理由：">
+			<el-input type="textarea" v-model="Labelapplication.ApplyReason"></el-input>
 			</el-form-item>
-
-
 			</el-form>
-		  <br>
 		  <el-button
-		  :plain="true"
-		  type="success"
+		  type="primary"
+		  style="float:right;"
 		  @click="saveApply()">添加</el-button>
 		</el-dialog>
 	</div>
 
 	<el-button
-	:plain="true"
+	style="float:right; margin:10px 30px;"
 	type="success"
 	v-if="active==2"
 	@click="active=1">返回</el-button>
@@ -103,14 +112,14 @@
 		</el-table-column>
 		<el-table-column prop="LabelMakeStatus" label="制作状态" min-width="25%">
 		</el-table-column>
-		<el-table-column prop="" min-width="25%" label="管理标签">
+		<!-- <el-table-column prop="" min-width="25%" label="管理标签">
 			<template scope="scope">
 				   <el-button
 				   size="small"
 				   type="primary"
 				   @click="manageLabel(scope.$index,productsData)">管理标签</el-button>
 			 </template>
-		</el-table-column>
+		</el-table-column> -->
 
 	</el-table>
 </div>

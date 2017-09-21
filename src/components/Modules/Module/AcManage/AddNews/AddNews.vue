@@ -4,24 +4,24 @@
             :model="article_data"
             :rules="rules"
             ref='refArticle'>
-            <el-form-item label="新闻标题" prop='NewsTitle' style="width:600px;">
+            <el-form-item label="新闻标题：" prop='NewsTitle' style="width:600px;">
                 <el-input v-model="article_data.NewsTitle"></el-input>
             </el-form-item>
-            <el-form-item label="关键字" prop='NewsKey' style="width:600px;">
+            <el-form-item label="关键字：" prop='NewsKey' style="width:600px;">
                 <el-input v-model="article_data.NewsKey"></el-input>
             </el-form-item>
-             <el-form-item label="新闻类别" prop='NewsCategory'>
+             <el-form-item label="新闻类别：" prop='NewsCategory'>
                 <el-select v-model="article_data.NewsCategory" placeholder="请选择新闻分类">
                     <el-option v-for="item in newsType" :value="item.CuitMoon_DictionaryName" :label="item.CuitMoon_DictionaryName"></el-option>
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="新闻内容" style="width:986px;" prop='Text'>
+            <el-form-item label="新闻内容：" style="width:986px;" prop='Text'>
                 <div id="article" style="min-height:350px; max-height:650px;"></div>
             </el-form-item>
            
 
-            <el-form-item label="状态">
+            <el-form-item label="状态：">
                 <el-switch on-text="发布" off-text="禁用" v-model="article_data.status" style="width:100%"></el-switch>
             </el-form-item>
 

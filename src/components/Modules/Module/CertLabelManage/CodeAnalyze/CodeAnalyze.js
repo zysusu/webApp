@@ -11,11 +11,7 @@ module.exports = {
 			 pageSize:10,
 			 searchFlag:false,
 			 applyType:[],
-			 fileData:[
-				{
-					name:'',
-				}
-			 ],
+			 fileData:[],
 			imageUrl:'',
 			imageUrl1:'',
             imgAction:'',
@@ -104,6 +100,9 @@ module.exports = {
 			.then((res)=>{
 				var hh = JSON.parse(res.request.response);
 				_this.fileData = hh.data.labels;
+				if(hh.data.total){
+					_this.totalNum = hh.data.total;
+				}
 			});
         },
 		getView(){

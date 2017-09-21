@@ -1,14 +1,12 @@
 <template>
     <div class="form">
-        <el-col :span="24" class='actions-top'>
-
+        <el-col v-show="!showAdd" :span="24" class='actions-top'>
             <el-form :inline="true" :model='search_data' class="demo-form-inline">
                 <el-form-item>
                     <el-input placeholder="气象站名称或者编号"
-                              v-model='search_data.Name'
-                              clear></el-input>
+                        v-model='search_data.Name'
+                        clear></el-input>
                 </el-form-item>
-            
                 <el-form-item>
                     <el-button type="default" @click='onSearch(search_data)'>查询</el-button>
                 </el-form-item>
@@ -17,7 +15,7 @@
                 </el-form-item>
             </el-form>
         </el-col>
-        <el-table v-if="!show_add" border style="width: 100%" align='center'
+        <el-table v-if="!showAdd" border style="width: 100%" align='center'
                   :data="station_list"
                   :model="station_list"
                   @selection-change='onSelectionChange'>
@@ -32,7 +30,7 @@
                     align="center">
             </el-table-column>
             <el-table-column
-                    prop="BelongTo"
+                    prop="AreaName"
                     label="所属气象局"
                     align="center">
             </el-table-column>
@@ -70,8 +68,7 @@
                     label="删除"
                     align="center"
                     :context="_self">
-                <template scope='scope'>
-                   
+                <template scope='scope'> 
                     <el-button
                             type="danger"
                             icon='delete'
@@ -80,7 +77,7 @@
                 </template>
             </el-table-column>
         </el-table>
- <div class="block" v-show="!show_add && !searchFlag" style="margin:20px 35px; float:right;">
+ <div class="block" v-if="!showAdd && !searchFlag" style="margin:20px 35px; float:right;">
     <el-pagination
         layout="total,prev, pager, next"
         :page-size="pageSize"
@@ -88,7 +85,7 @@
          @current-change="handleCurrentChange">
     </el-pagination>
 </div> <!--  分页的div -->
-<div class="block" v-show="!show_add && searchFlag" style="margin:20px 35px; float:right;">
+<div class="block" v-if="!showAdd && searchFlag" style="margin:20px 35px; float:right;">
       <el-pagination
         layout="total,prev, pager, next"
         :page-size="pageSize"
@@ -133,12 +130,10 @@
                               prop='Remark'>
                               {{item.Remark}}
                 </el-form-item>
-
-
             </el-form>
-            <span slot="footer" class="dialog-footer">
+            <div slot="footer" style="width:100%; float:right; margin-bottom: 20px;" class="dialog-footer">
                 <el-button type="success" @click="dialog2.show = false">返回</el-button>        
-            </span>
+            </div>
         </el-dialog> 
 
     <div class="addDiv">
@@ -150,7 +145,7 @@
             ref='station_data'>
             <el-form-item 
                 :disabled='true'
-                label="气象站编号"
+                label="气象站编号："
                 prop="WeatherStationID">
                 <el-input
                         v-model="station_data.WeatherStationID"></el-input>
@@ -159,7 +154,7 @@
 
             <el-form-item 
                 :disabled='true'
-                label="气象站名称"
+                label="气象站名称："
                 prop="Name">
                 <el-input
                         v-model="station_data.Name"></el-input><!-- <button @click="findStation">在地图上查找</button> -->
@@ -167,15 +162,20 @@
 
              <el-form-item 
                 :disabled='true'
-                label="所属气象局"
+                label="所属气象局："
                 prop="BelongTo">
-                <el-input
-                        v-model="station_data.BelongTo"></el-input>
+                <!-- <el-input
+                        v-model="station_data.BelongTo"></el-input> -->
+                <el-cascader
+                    :props="areaList"
+                    :options="area_list"
+                    change-on-select
+                    v-model="station_data.BelongTo">
+                </el-cascader>
             </el-form-item>
-
              <el-form-item 
                 :disabled='true'
-                label="请选择气象站所在位置"
+                label="请选择气象站所在位置："
                 prop="WeatherStationInfoID">
             </el-form-item>
 
@@ -183,7 +183,7 @@
 
             <el-form-item 
                 :disabled='true'
-                label="所在经度"
+                label="所在经度："
                 prop="Longitude">
                 <el-input
                         v-model="station_data.Longitude"></el-input>
@@ -191,22 +191,22 @@
 
             <el-form-item 
                 :disabled='true'
-                label="所在纬度"
+                label="所在纬度："
                 prop="Latitude">
                 <el-input
                         v-model="station_data.Latitude"></el-input>
             </el-form-item>
             <el-form-item 
                 :disabled='true'
-                label="测量要素"
+                label="测量要素："
                 prop="Measuringelements">
                   <el-checkbox-group v-model="station_data.Measuringelements">
-                    <el-checkbox v-for="item in elements" :value="item.ElementNumber" :label="item.ElementName"></el-checkbox>
+                    <el-checkbox v-for="item in elements" :label="item.ElementNumber" :key="item.ElementNumber">{{item.ElementName}}</el-checkbox>
                   </el-checkbox-group>
             </el-form-item>
             <el-form-item 
                 :disabled='true'
-                label="备注"
+                label="备注："
                 prop="Remark">
                 <el-input
                         v-model="station_data.Remark"></el-input>
@@ -223,8 +223,8 @@
     </div>  <!-- add_end -->
     </div>
 </template>
-
- <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=lYZBeQf4N70KiPjHabOe2HMI988q4yYU"></script>
+<!-- 
+ <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=lYZBeQf4N70KiPjHabOe2HMI988q4yYU"></script> -->
 
 <script>
 	import WeatherJs from './Weather.js';
@@ -232,18 +232,18 @@
 </script>
 
 <style scoped lang='less'>
+.map{
+    width:500px;
+    height:400px;
+    border:1px solid black;
+    overflow: hidden;
+    margin-left: 100px;
+    margin-top: -70px;
+    margin-bottom: 30px;
+}
     .demo-form-inline {
         display: inline-block;
         float: right;
-    }
-    .map{
-      width:500px;
-      height:400px;
-      border:1px solid black;
-      margin-left: 100px;
-      margin-top: -70px;
-      margin-bottom: 30px;
-
     }
     .addDiv{
       display: none;

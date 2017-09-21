@@ -2,11 +2,11 @@
     <div class="form">
       <div id="mainText">
         <el-col :span="24" class='actions-top'>
-            <el-form :inline="true" :model='search_data' class="demo-form-inline">
+            <el-form :inline="true" :model='search_data' class="demo-form-inline" style="margin: 0px;">
                 <el-form-item label="请输入要查找的产品名称">
                     <el-input
-                              v-model='search_data.Name'
-                              clear></el-input>
+                        v-model='search_data.Name'
+                        clear></el-input>
                 </el-form-item>  
                 <el-form-item>
                     <el-button type="primary" @click='onSearch'>查询</el-button>
@@ -156,12 +156,13 @@
 
           <td>
             <tr v-for="(list,index) in item.element">
-              <td><input v-model="list.OptimalRange" style="width: 120px; height:30px; margin:0;" type="text"/></td>
+              <td>{{list.bestSuit}}
+                <!-- <input v-model="list.OptimalRange" style="width: 120px; height:30px; margin:0;" type="text"/> --></td>
             </tr>
           </td>
           <td>
             <tr v-for="(list,index) in item.element">
-              <td>{{list.Unit}}</td>
+              <td><span class="realEle"></span>{{list.Unit}}</td>
             </tr>
           </td>
           <td>
@@ -203,7 +204,8 @@
 .picTable{
   width:100%;
   border-top: 1px solid #ccc;
-  margin-top: 0px;
+  margin-top: -10px;
+  background-color: #fff;
 }
 .picTable th{
   height:40px;

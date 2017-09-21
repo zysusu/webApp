@@ -12,13 +12,7 @@ module.exports = {
             label : 'CuitMoon_AreaName',
             children : 'child'
         },
-       ExpertGroup_list: [{
-        expertsID: '',
-        expertsLevel: '',
-        Region: '',
-        expertsName: '',
-        expertsPerson: [],
-      }],
+      ExpertGroup_list: [],
       people_list:[],  //可选成员
       levelData:[],  //专家级别
       exgroup_info:{},
@@ -77,7 +71,9 @@ module.exports = {
             message: '添加成功',
             type: 'success'
         });
-         window.location.reload();
+         this.dialog.show = false;
+          this.getView();
+        // window.location.reload();
     }else{
         this.$message({
                 showClose: true,
@@ -169,20 +165,20 @@ module.exports = {
             .then((res)=>{
                  var hh = JSON.parse(res.request.response);    
                     if(hh.status===200){
-                         _this.totalNum = parseInt(hh.data.total);
+                        _this.totalNum = parseInt(hh.data.total);
                         _this.ExpertGroup_list = hh.data.ExpergrouptList;
                         _this.searchFlag = true;
                     }else{
                          this.$message({
                             showClose: true,
-                            message  : hh.msg,
+                            message  : '查询失败',
                             type     : 'error'
                         });
-                }
+                    }
             });
         },
 
- handleCurrentChange(val){
+ handleCurrentChange2(val){
             var _this = this;
             this.axios.post('/index.php?r=AuthCenter/expertsgroup-manage/search-expertsgroup',{pagesize:_this.pageSize,pagenum:val})
             .then((res)=>{
@@ -299,7 +295,7 @@ module.exports = {
     onEditExperGroup(exgroup) {
         this.dialog1.show = true;
         this.dialog1.exgroup_info = exgroup;
-        this.dialog1.exgroup_info.Region = exgroup.LongArea;
+        //this.dialog1.exgroup_info.Region = exgroup.LongArea;
         var Level = exgroup.expertsLevel;
         var _this = this;
         this.axios.post("/index.php?r=AuthCenter/expertsgroup-manage/get-all-expert",{level:Level})

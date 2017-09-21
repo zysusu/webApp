@@ -4,6 +4,8 @@ import Content from './Routeview/Content.vue';
 import NotFound from './Routeview/NotFound.vue';
 import Modules from './Modules/';
 import CodePage from './CodePage/';
+import HomePage from './HomePage/';
+import ContentPg from './ContentPg/';
 
 module.exports = {
     Login,
@@ -11,5 +13,7 @@ module.exports = {
     Content,
     NotFound,
     Modules,
-    CodePage
+    CodePage,
+    HomePage,
+    ContentPg
 };

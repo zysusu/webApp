@@ -10,7 +10,7 @@ module.exports = {
 			applyData:{},  //查看详情
 			scoreData:[],
 			search_data:{
-				username:'',
+				Name:'',
 			},
 			tableData:[],  //证书列表
 			showChild:false,
@@ -37,12 +37,6 @@ module.exports = {
 				_this.totalNum = hh.data.total;
 				_this.applyList = hh.data.apply;
 			});
-			this.axios.post('/index.php?r=ClimateQuality/authentication/get-certificate')
-			.then((res)=>{
-				var hh = JSON.parse(res.request.response);
-				_this.tableData = hh.data;
-			});
-
 		},
 		handleCurrentChange(val){
 			var _this = this;
@@ -63,7 +57,8 @@ module.exports = {
                             message  : hh.msg,
                             type     : 'success'
                         });
-                        window.location.reload();
+                        //window.location.reload();
+                        this.getView();
                     }else{
                          this.$message({
                             showClose: true,
@@ -73,21 +68,26 @@ module.exports = {
                   }
 			});
 		},
-		showMore(applyBh){
+		showMore(obj){
+			var applyBh = obj.ApplyBh;
 			var _this = this;
 			this.showChild = true;
 			this.axios.post('/index.php?r=ClimateQuality/authentication/get-apply-one',{ApplyBh:applyBh})
 			.then((res)=>{
 				var hh = JSON.parse(res.request.response);
 				_this.applyData = hh.data;
-				// this.totalNum = hh.data.total;
-				// this.applyList = hh.data.apply;
+			});
+			var User = obj.ApplyPerson;
+			this.axios.post('/index.php?r=ClimateQuality/authentication/get-certificate-by-user',{user:User})
+			.then((res)=>{
+				var hh = JSON.parse(res.request.response);
+				_this.tableData = hh.data;
 			});
 		},
 		showUpdate(applyBh){
 			this.$router.push('/module/cquality/apply?'+applyBh);
 		},
-		deleteData(obj){
+		deleteData(obj,index){
             this.$confirm('你确定删除 '+obj.unityName+' 么?', '删除申请', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -102,7 +102,8 @@ module.exports = {
                             message  : hh.msg,
                             type     : 'success'
                         });
-                        window.location.reload();
+                        this.applyList.splice(index,1);
+                        this.totalNum = this.totalNum-1;
                     }else{
                          this.$message({
                             showClose: true,
@@ -113,25 +114,36 @@ module.exports = {
                 })
             });
 		},
-		save_user(userlist) {
-			console.log(userlist);
-			 		//var _this = this;
-			 		alert(1);
-	                this.axios.post("/index.php?r=System/user/add-user",userlist)
-	                .then((res) => {  
-	                var hh = JSON.parse(res.request.response);
-	                if(hh.status===200){
-	                	alert("添加成功！");
-	                	this.$router.push('/module/sys/modManage');
-	                }
-	                });
-
-		},
+		onSearch(val) {
+            var _this = this;
+            var name = this.search_data.Name;
+            this.axios.post('/index.php?r=AuthCenter/business-manage/search-business',{CampanyName:name,pagesize:_this.pageSize,pagenum:1})
+            .then((res)=>{
+                 var hh = JSON.parse(res.request.response);    
+                    if(hh.status===200){
+                        _this.totalNum = hh.data.total;
+                        _this.BussManager_list = hh.data.businessList;
+                        _this.searchFlag = true;
+                    }else{
+                         this.$message({
+                            showClose: true,
+                            message  : hh.msg,
+                            type     : 'error'
+                        });
+                }
+            });
+        },
+        handleCurrentChange2(val){
+            var _this = this;
+            this.axios.post('/index.php?r=AuthCenter/business-manage/search-business',{pagesize:_this.pageSize,pagenum:val})
+            .then((res)=>{
+                var hh = JSON.parse(res.request.response);
+                _this.totalNum = hh.data.total;
+                _this.BussManager_list = hh.data.businessList;
+        	});
+    	},      
 		onChangeDate(val) {
 			this.user_list.CuitMoon_UserBirthday = val;
-		},
-		reset_user(userdata) {
-			this.$refs[userdata].resetFields();
 		},
 		reBack(){
 			this.showChild = false;

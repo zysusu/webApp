@@ -5,6 +5,7 @@ module.exports = {
              totalNum:0,
              pageSize:10,
              searchFlag:false,
+             pageFlag:true,
             productType:[],
             productProps:{
                 children:'productType',
@@ -118,6 +119,7 @@ module.exports = {
             var type = obj.CuitMoon_DictionaryName;
             this.showList = true;
             this.addChild = false;
+            this.pageFlag = false;
              var _this = this;
                 this.axios.post("/index.php?r=AuthModel/produce-info/view-chose",{ProductType:type})
                 .then((res) => {  
@@ -193,50 +195,6 @@ module.exports = {
                 }
             }
         },
-
-        setUserAccess() {
-            var flag = false;
-            for (var i = 0; i < this.checkeds.length; i++) {
-                var arr = this.checkeds[i].split('/');
-
-                if (arr.length === 4) {
-                    flag = true;
-                    var rootPath = '/' + arr[1],
-                        twoPath = rootPath + '/' + arr[2];
-
-                    if (this.checkeds.indexOf(rootPath) === -1) {
-                        this.checkeds.push(rootPath);
-                    }
-                    if (this.checkeds.indexOf(twoPath) === -1) {
-                        this.checkeds.push(twoPath);
-                    }
-                }
-            }
-
-            //当前所选中的节点
-            if (flag === false) {
-                this.checkeds = [];
-            }
-
-            // console.log(this.checkeds.join(','));
-            // console.log(this.user_id.join(','));
-
-
-            if (this.user_id.length) {
-                UserApi.setAccessUser.call(this, {
-                    user_id: this.user_id.join(','),
-                    user_accesss: this.checkeds.join(',')
-                }, data => {
-                    this.$message.success('设置成功');
-                });
-            } else {
-                this.$message.error('用户不能为空');
-            }
-        },
-       /* togShow(e){
-            $(this).find('ul').css('display','none');
-        },
-*/
         initRouters(){
             var routes = this.$router.options.routes;
             for (var i = 0; i < routes.length; i++) {
@@ -286,13 +244,16 @@ module.exports = {
                     this.axios.post("/index.php?r=AuthModel/produce-info/add",prodata)
                     .then((res) => {  
                     var hh = JSON.parse(res.request.response);
-                    if(hh.status===200){
+                    if(hh.status==200){
                         this.$message({
                             showClose: true,
                             message  : hh.msg,
                             type     : 'success'
                         });
-                        window.location.raload();
+                        this.addChild = false;
+                        this.getData();
+                        this.showList = true;
+                        this.pageFlag = true;
                     }else{
                         this.$message({
                             showClose: true,
@@ -352,6 +313,9 @@ module.exports = {
                     _this.showList = true;        
                     _this.productType = hh.data;
                 });
+            },
+        getData(){
+                var _this = this;
                 this.axios.post("/index.php?r=AuthModel/produce-info/view-all",{pagesize:_this.pageSize,pagenum:1})
                 .then((res) => {  
                 var hh = JSON.parse(res.request.response); 
@@ -360,7 +324,7 @@ module.exports = {
                     _this.totalNum = parseInt(hh.data.total);
                     _this.product_list.ProductType = type;
                 });
-            },
+        },
         handleCurrentChange(val){
             var _this = this;
             this.axios.post("/index.php?r=AuthModel/produce-info/view-all",{pagesize:_this.pageSize,pagenum:val})
@@ -375,7 +339,7 @@ module.exports = {
         /**
          * 删除事件
          */
-        onDelete(product) {
+        onDelete(product,index) {
             var delId = product.ProductNumber;
 			this.$confirm('你确定删除产品 '+ product.ProductName+' 么?', '删除用户', {
 				confirmButtonText: '确定',
@@ -392,7 +356,8 @@ module.exports = {
                             message  : hh.msg,
                             type     : 'success'
                         });
-                        //this.$router.push('/module/sys/modManage');
+                       _this.product_list.splice(index,1);
+                       _this.totalNum =this.totalNum-1;
                     }
                 });		
 			});
@@ -436,6 +401,7 @@ module.exports = {
 
     mounted() {
         this.getType();
+        this.getData();
         this.initRouters();
     },
     watch: {

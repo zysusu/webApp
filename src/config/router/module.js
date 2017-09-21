@@ -82,7 +82,7 @@ module.exports = [{
 		component: Content,
 		redirect: '/module/cquality/epScore',
 		children: [{
-			path: 'edit',
+			path: 'epScore',
 			name: '专家评分',
 			icon: 'edit',
 			component: Modules.Module.Cquality.EpScore

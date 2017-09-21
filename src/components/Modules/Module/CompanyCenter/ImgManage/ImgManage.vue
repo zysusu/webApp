@@ -120,8 +120,11 @@
               </el-table-column>
             </el-table>
             <br>
-                <el-form label-width="100px" :model="imgInfo" style="width:100%;">
-                  <el-form-item label="上传证书：">
+          <el-card :body-style="{ padding: '0px' }">
+            <header class="infoTop">添加图片</header>
+                <el-form label-width="100px" :model="imgInfo" style="width:100%; margin:15px;">
+                <div class="info1">
+                  <el-form-item label="上传图片：">
                     <el-upload
                       class="avatar-uploader"
                       :action="imgAction"
@@ -132,18 +135,22 @@
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                   </el-form-item>
-
-                  <el-form-item label="图片名称：" class="edit-form">
+                </div>
+                <div class="info2">
+                  <el-form-item label="图片名称：">
                     <el-input v-model="imgInfo.PicName"></el-input>
                   </el-form-item>
 
-                  <el-form-item label="图片描述：" type="textarea" class="edit-form">
-                    <el-input v-model="imgInfo.PicContent"></el-input>
+                  <el-form-item label="图片描述：">
+                    <el-input type="textarea" v-model="imgInfo.PicContent"></el-input>
                   </el-form-item>
+                </div>
                 </el-form>
-                <el-button type="primary" @click="addImage(imgInfo)">保存图片</el-button>
-                <el-button type="primary" @click="reBack()">返回</el-button>
-                <br><br><br><br>
+                <div style="width:100%; float:left; text-align: center; margin-bottom: 30px;">
+                    <el-button type="primary" @click="addImage(imgInfo)">保存图片</el-button>
+                    <el-button type="primary" @click="reBack()">返回</el-button>
+                </div>
+            </el-card>
           </div>
 <!-- 添加页面结束 -->
 <!--     <el-dialog v-model="dialogVisible" size="tiny">
@@ -157,6 +164,17 @@
 </script>
 
 <style scoped lang='less'>
+.infoTop{
+    height:35px;
+    background-color: #96CB33;
+    color:#fff;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+.info1,.info2{
+  width: 47%;
+  float: left;
+}
 .badge{
     background-color: transparent;
 }

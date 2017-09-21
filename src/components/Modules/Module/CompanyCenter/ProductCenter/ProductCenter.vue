@@ -188,6 +188,7 @@
     </div>
     <!-- 修改页面结束 -->
     <div class="form" v-show="lookInfo">
+    <el-card class="box-card" style="padding:0; width:94%; margin-left: 3%; background-color: #f9f9f9;">
         <el-form label-width="100px" style="margin:20px;width:100%;min-width:600px;"
             :model="productData"
             :rules="rules"
@@ -206,6 +207,7 @@
               <el-button type="primary" @click='reBack()'>返回</el-button>
             </el-form-item>
         </el-form>
+      </el-card>
     </div>
 
  </div>

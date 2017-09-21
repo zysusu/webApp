@@ -1,10 +1,6 @@
 <template>
     <div class="BussManage">
         <el-col :span="24" class='actions-top'>
-          <!--   <el-button type='danger' icon='delete'
-                       :disabled='batch_flag'
-                       @click='onDeleteUser(true)'>删除选中
-            </el-button> -->
 
             <el-form :inline="true" :model='search_data' class="demo-form-inline">
                 <el-form-item>
@@ -25,10 +21,6 @@
         <el-table border style="width: 100%" align='center'
                   :data="BussManager_list"
                   @selection-change='onSelectionChange'>
-          <!--   <el-table-column
-                    type="selection"
-                    width="55">
-            </el-table-column> -->
             <el-table-column
                     prop="CampanyName"
                     label="单位名称"
@@ -104,8 +96,8 @@
         @current-change='handleCurrentChange2'>
       </el-pagination>
      </div> <!--  分页的div -->
-        <el-dialog title="商家信息" v-model="dialog.show" size="tiny">
-            <el-form style="margin:20px;width:60%;min-width:100%"
+        <el-dialog title="商家信息" style="margin-bottom: 20px;" v-model="dialog.show">
+            <el-form style="margin:20px;width:100%"
                      label-width="100px"
                      :model="dialog.business_info">
                 <el-form-item class='edit-form'
@@ -182,22 +174,20 @@
                               prop='Remark'>
                     {{dialog.business_info.Remark}}
                 </el-form-item>
-                <el-form-item class="edit-form"
+              <!--   <el-form-item class="edit-form"
                               label='相关资质：'
                               prop='Qualification'>
                     {{dialog.business_info.Qualification}}
-                </el-form-item>
-                <!-- 此处需要根据logo中存储的URL值显示图片-->
-                <el-form-item class="edit-form"
+                </el-form-item> -->
+               
+                <el-form-item
                               label='Logo：'
                               prop='Logo'>
-                    {{dialog.business_info.Logo}}
+                  <img :src="imgSrc+dialog.business_info.Logo" style="width:150px; border:1px solid #e1e1e1; margin-top:10px;"/>
                 </el-form-item>
-
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialog.show = false">返回</el-button>
-                <el-button type="primary" @click="dialog.show = false">确 定</el-button>
+                <el-button type="primary" @click="dialog.show = false">返 回</el-button>
             </span>
         </el-dialog>
 

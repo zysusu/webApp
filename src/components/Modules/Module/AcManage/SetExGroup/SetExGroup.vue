@@ -4,6 +4,7 @@
             <el-form :inline="true" :model='search_data' class="demo-form-inline">
                 <el-form-item>
                     <el-input
+                        placeholder="专家组名称"
                         v-model='search_data.Name'
                         clear></el-input>
                 </el-form-item>
@@ -33,7 +34,7 @@
             </el-table-column>
 
             <el-table-column
-                    prop="Region"
+                    prop="LongArea"
                     label="所属区域"
                     align="center">
             </el-table-column>
@@ -66,7 +67,7 @@
                 </template>
             </el-table-column>
         </el-table>
-<div class="block" v-show="!searchFlag" style="margin:20px 35px; float:right;">
+<div class="block" v-if="!searchFlag" style="margin:20px 35px; float:right;">
     <el-pagination
         layout="total,prev, pager, next"
         :page-size="pageSize"
@@ -74,7 +75,7 @@
          @current-change="handleCurrentChange">
     </el-pagination>
 </div> <!--  分页的div -->
-<div class="block" v-show="searchFlag" style="margin:20px 35px; float:right;">
+<div class="block" v-if="searchFlag" style="margin:20px 35px; float:right;">
     <el-pagination
         layout="total,prev, pager, next"
         :page-size="pageSize"
@@ -88,13 +89,13 @@
                      label-width="100px"
                      :model="dialog.exgroup_info">
                 <el-form-item
-                              label="专家组名称"
+                              label="专家组名称："
                               prop='expertsName'>
                               <el-input
                         v-model="dialog.exgroup_info.expertsName" ></el-input>
                 </el-form-item>
                 <el-form-item
-                              label="专家层次"
+                              label="专家层次："
                               prop='expertsLevel'>
                      <el-select v-model="dialog.exgroup_info.expertsLevel" @change="changeExpertLevel" placeholder="请选择">
                        <el-option v-for="item in levelData" :value='item' :label="item"></el-option>
@@ -102,7 +103,7 @@
                 </el-form-item>
 
                 <el-form-item
-                              label="所属区域"
+                              label="所属区域："
                               prop='Region'>
                  <el-select v-if="dialog.exgroup_info.expertsLevel=='省级专家' || dialog.exgroup_info.expertsLevel==''" v-model="dialog.exgroup_info.Region[0]" style="float:left;">
                   <el-option v-for="item in province" :value='item.CuitMoon_AreaName' :label="item.CuitMoon_AreaName"></el-option>
@@ -117,7 +118,7 @@
                 </el-cascader>
                 </el-form-item>
                 <el-form-item style="width:100%;"
-                        label="专家成员"
+                        label="专家成员："
                         prop='expertsPerson'>
                     <el-checkbox-group v-model="dialog.exgroup_info.expertsPerson">
                         <el-checkbox v-for="item in people_list" :label="item.ExpertNo">{{item.Expertname}}</el-checkbox>
@@ -137,13 +138,13 @@
                      :model="dialog1.exgroup_info"
                      ref="dialog1.exgroup_info">
                 <el-form-item
-                              label="专家组名称"
+                              label="专家组名称："
                               prop='expertsName'>
                               <el-input
                         v-model="dialog1.exgroup_info.expertsName" ></el-input>
                 </el-form-item>
                 <el-form-item 
-                              label="专家层次"
+                              label="专家层次："
                               prop='expertsLevel'>
                      <el-select v-model="dialog1.exgroup_info.expertsLevel"@change="changeExpertLevel" placeholder="请选择">
                        <el-option v-for="item in levelData" :value='item' :label="item"></el-option>
@@ -151,7 +152,7 @@
                 </el-form-item>
 
                 <el-form-item 
-                              label="所属区域"
+                              label="所属区域："
                               prop='Region'>
                 <el-select v-if="dialog1.exgroup_info.expertsLevel=='省级专家' || dialog1.exgroup_info.expertsLevel==''" v-model="dialog1.exgroup_info.Region[0]" style="float:left;">
                   <el-option v-for="item in province" :value='item.CuitMoon_AreaName' :label="item.CuitMoon_AreaName"></el-option>
@@ -168,7 +169,7 @@
                 </el-form-item>
 
                 <el-form-item
-                      label="专家成员"
+                      label="专家成员："
                       prop='expertsPerson'>
                     <el-checkbox-group v-model="dialog1.exgroup_info.expertsPerson">
                         <el-checkbox v-for="item in people_list" :label="item.ExpertNo">{{item.Expertname}}</el-checkbox>

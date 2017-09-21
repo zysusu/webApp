@@ -4,9 +4,7 @@ module.exports = {
 		return {
             totalNum:0,
             pageSize:10,
-			project_list:[{
-				name :'',
-			}], //首页方案列表
+			project_list:[], //首页方案列表
             lookAll:false,  //详情
             showFirst:true,
             checkAll:false,  //审核
@@ -55,7 +53,6 @@ module.exports = {
                     meteIndicatorsReason:''
             },
 			scoreData:[],
-
 			search_data:{
 				Name:'',
 			},
@@ -100,9 +97,9 @@ module.exports = {
         },
         checkProject(info){
             this.viewBh = info.ApplyBh;
-            this.checkAll = true;
+            /*this.checkAll = true;
             this.showAll = false;
-            this.showFirst = false;
+            this.showFirst = false;*/
             var apply = info.ApplyBh;
             var _this = this;
             this.axios.post('/index.php?r=ClimateQuality/identification/get-review',{ApplyBh:apply})
@@ -112,10 +109,9 @@ module.exports = {
                     _this.productInfo = hh.data.apply;
                     _this.elementInfo = hh.data.Bearinginfo;
                     _this.localInfo =  hh.data.identifictionInfo;
-
-                    // _this.checkAll = true;
-                    // _this.lookAll = true;
-                    // _this.showFirst = false;
+                     this.checkAll = true;
+                        this.showAll = false;
+                        this.showFirst = false;
                     if(hh.data.isrole=='基层专家组组长审核'){
                         _this.checkFlag = 1;
                     }else if(hh.data.isrole=='省级专家组组长审核'){
@@ -123,8 +119,7 @@ module.exports = {
                     }else if(hh.data.isrole=='没有权限'){
                         _this.checkFlag = 2;  //这里需要修改为3
                     }
-                   
-                 } 
+                 }
             });
         },
         showAll(info){
@@ -137,8 +132,16 @@ module.exports = {
                     _this.showFirst = false;
                     _this.checkAll = false;
                     _this.lookAll = true;
-                    _this.productInfo = hh.data.identifictionInfo;
-                    _this.elementInfo = hh.data.Bearinginfo;
+                    if(hh.data.Bearinginfo){
+                         _this.elementInfo = hh.data.Bearinginfo;
+                     }else{
+                        _this.elementInfo = {};
+                     };
+                    if(hh.data.identifictionInfo){
+                         _this.productInfo = hh.data.identifictionInfo;
+                     }else{
+                        _this.elementInfo = {};
+                     };
                     if(hh.data.QualityIdentification==null){
                         _this.localInfo = {};
                     }else{
@@ -153,7 +156,6 @@ module.exports = {
                  }   
             });   
         },
-        
         submitView(obj){
             if(this.checkFlag == 1){
                 var thLev = "基层专家";
@@ -170,6 +172,10 @@ module.exports = {
                             message  : "审核成功！",
                             type     : 'success'
                     });
+                    this.showFirst = true;
+                    this.lookAll = false;
+                    this.checkAll = false;
+                    this.getView();
                 }else{
                     this.$message({
                             showClose: true,
@@ -190,8 +196,10 @@ module.exports = {
             this.axios.post('/index.php?r=ClimateQuality/identification/get-all',{pagesize:_this.pageSize,pagenum:1})
             .then((res)=>{
                  var hh = JSON.parse(res.request.response);
-                _this.project_list = hh.data.apply;
-                _this.totalNum = parseInt(hh.data.total);
+                if(hh.status==200){
+                    _this.project_list = hh.data.apply;
+                    _this.totalNum = parseInt(hh.data.total);
+                }
             });
 		},
         handleCurrentChange(val){
@@ -223,13 +231,21 @@ module.exports = {
                    stationId:info.stationId,
                     meteIndicators:info.meteIndicators,
                     cropGrowthPeriod:info.cropGrowthPeriod,
-                  //  ApplyFrequency:info.ApplyFrequency,
                     startCollectionTime:info.startCollectionTime,
                     endCollectionTime:info.endCollectionTime,
                     meteIndicatorsReason:info.meteIndicatorsReason
                 };
             this.total_bear.push(list);
-            this.bearing = this.initBear;
+            var InItBear = {
+                    stationId:'',
+                    meteIndicators:[],
+                    cropGrowthPeriod:'',
+                  //  ApplyFrequency:'',
+                    startCollectionTime:'',
+                    endCollectionTime:'',
+                    meteIndicatorsReason:''
+            };
+            this.bearing = InItBear;
         },
         deleteChild(info){
            this.total_bear.splice(info, 1);
@@ -278,7 +294,6 @@ module.exports = {
 	mounted() {
 		this.getView();
 	},
-
 	watch: {
 		$route(to, from){
 			this.getView();

@@ -95,11 +95,14 @@ module.exports = {
                          console.log(data);
                          if(data.status===200){
                              this.$router.push('/module/');
+                         }else{
+                            this.login_actions.disabled = false;
+                            this.$message.error(data.msg);
                          }
                         //登录成功之后，验证是否记住密码，如果记住密码，本地保存记住信息
                         //如果没有记住，就初始化本地记住信息
         
-                       /* if (this.remumber.remumber_flag === true) {
+                        if (this.remumber.remumber_flag === true) {
                             this.$store.dispatch('update_remumber', {
                                 remumber_flag: this.remumber.remumber_flag,
                                 remumber_login_info: {
@@ -107,7 +110,7 @@ module.exports = {
                                     token: data.userinfo.token
                                 }
                             });
-                        } else {
+                        }/* else {
                             this.$store.dispatch('remove_remumber');
                         }*/
 

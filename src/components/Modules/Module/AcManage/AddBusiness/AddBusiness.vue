@@ -1,73 +1,70 @@
 <template>
     <div class="form">
+      <el-card class="box-card" style="padding: 0; background-color: #f9f9f9;">
         <el-form style="margin:20px;width:100%;min-width:600px;"
-            label-width="100px"
+            label-width="113px"
             :model="business_list"
             :rules='business_rules'
             ref='business_list'>
             <div class="info1">
-                <el-form-item class='edit-form'
+                <el-form-item
                     :disabled='true'
-                    label="用户名称"
+                    label="用户名称："
                     prop='UserName'>
                     <el-input
                         @blur="checkName()"
                         v-model="business_list.UserName" placeholder='登录名'></el-input>
                 </el-form-item>
-
-                 <el-form-item class='edit-form'
+                 <el-form-item
                     :disabled='true'
                     v-if="!business_list.CampanyNo"
-                    label="密码"
+                    label="密码："
                     prop='LoginPassword'>
                     <el-input
                             type='password'
                             v-model="business_list.LoginPassword"></el-input>
                 </el-form-item>
-
-                <el-form-item class='edit-form'
+                <el-form-item 
                     :disabled='true'
                     v-if="!business_list.CampanyNo"
-                    label="确认密码"
+                    label="确认密码："
                     prop='checkPassword'>
                     <el-input
                             type='password'
                             v-model="business_list.checkPassword"></el-input>
                 </el-form-item>
-
-                <el-form-item class='edit-form'
-                    label="单位名称"
+                <el-form-item
+                    label="单位名称："
                     prop='CampanyName'>
                     <el-input
                         v-model="business_list.CampanyName"></el-input>
                 </el-form-item>
-
-                <el-form-item class='edit-form'
-                    label="单位性质"
+                <el-form-item 
+                    label="单位性质："
                     prop='CampanyType'>
                     <el-select v-model="business_list.CampanyType">
                         <el-option v-for="item in unit_type" :value='item.CuitMoon_DictionaryName' :label='item.CuitMoon_DictionaryName'></el-option>
                     </el-select>
                 </el-form-item>
 
-                <el-form-item class='edit-form'
-                    label="企业类型"
+                <el-form-item 
+                    label="企业类型："
                     prop='CompanyType'>
                     <el-select v-model="business_list.CompanyType">
                         <el-option v-for="item in company_type" :value='item.CuitMoon_DictionaryName'></el-option>
                     </el-select>
                 </el-form-item>
 
-                <el-form-item class='edit-form'
-                    label="商家类型"
+                <el-form-item
+                    label="商家类型："
                     prop='BusinessType'>
                     <el-select v-model="business_list.BusinessType">
                         <el-option v-for="item in boss_type" :value='item.CuitMoon_DictionaryName'></el-option>
                     </el-select>
                 </el-form-item>
                 <!-- prop='BusinessArea' -->
-                <el-form-item style="min-width:600px;" class='edit-form'
-                    label="商家所在地">
+                <el-form-item style="min-width:600px;"
+                    label="商家所在地：">
                      <!-- <el-select @change="changeExpertProvince" v-model="area_data.Province" placeholder='请选择省' style="float:left;">
                         <el-option v-for="item in province" :value='item.CuitMoon_AreaCode' :label="item.CuitMoon_AreaName"></el-option>
                     </el-select>
@@ -87,7 +84,7 @@
                 </el-form-item>
                  
                 <el-form-item
-                    label="注册商标"
+                    label="注册商标："
                     prop="Logo">
                     <el-upload
                       class="avatar-uploader"
@@ -102,70 +99,70 @@
                 </el-form-item>
             </div>
             <div class="info2">
-                <el-form-item  class='edit-form'
-                    label="法人"
+                <el-form-item 
+                    label="法人："
                     prop='LegalPerson'>
                      <el-input
                         v-model="business_list.LegalPerson"
                         ></el-input>
                 </el-form-item>
 
-                <el-form-item class='edit-form'
-                    label="法人代表码"
+                <el-form-item 
+                    label="法人代表码："
                     prop='LegalPresentCode'>
                     <el-input
                         v-model="business_list.LegalPresentCode"
                         ></el-input>
                 </el-form-item>
 
-                <el-form-item class='edit-form'
-                    label="通讯地址"
+                <el-form-item 
+                    label="通讯地址："
                     prop='Address'>
                     <el-input
                         v-model="business_list.Address">
                       </el-input>
                 </el-form-item>
 
-                    <el-form-item class='edit-form'
-                    label="业务联系人"
+                    <el-form-item 
+                    label="业务联系人："
                     prop='CantactPerson'>
                     <el-input
                         v-model="business_list.CantactPerson" ></el-input>
                 </el-form-item>
 
-                <el-form-item class='edit-form'
-                    label="联系电话"
+                <el-form-item 
+                    label="联系电话："
                     prop='TEL'>
                     <el-input
                         v-model="business_list.TEL"
                         ></el-input>
                 </el-form-item>
 
-                <el-form-item class='edit-form'
-                    label="手机"
+                <el-form-item 
+                    label="手机："
                     prop='MobilePhone'>
                     <el-input
                         v-model="business_list.MobilePhone"
                         ></el-input>
                 </el-form-item>
 
-                <el-form-item class='edit-form'
-                    label="传真"
+                <el-form-item 
+                    label="传真："
                     prop='Fax'>
                     <el-input
                         v-model="business_list.Fax"
                         ></el-input>
                 </el-form-item>
 
-                <el-form-item class='edit-form'
-                    label="企业邮箱"
+                <el-form-item 
+                    label="企业邮箱："
                     prop='MailBox'>
                     <el-input
                         v-model="business_list.MailBox"
                         ></el-input>
                 </el-form-item>
-                <el-form-item class='edit-form'
-                    label="商家简介"
+                <el-form-item
+                    label="商家简介："
                     prop='Remark'>
                     <el-input type='textarea'
                         v-model="business_list.Remark"
@@ -175,7 +172,7 @@
         </el-form>
             <!--  插入证书上传表单 -->
     <div class="info3" style="min-height: 100px; height:auto;">
-    <label>已上传的证书:</label>
+    <strong>已上传的证书:</strong>
      <el-table
         :data="business_list.Certificate"
         border
@@ -225,7 +222,7 @@
           ref='certificate_list'>
              <!--  此处插入按钮可上传证书照片 并将其URL存于certificate的PictureUrl字段中 -->
             <div class="info1">
-              <el-form-item class="edit-form"
+              <el-form-item  
                 label="上传证书："
                 prop="PictureUrl">
                 <el-upload
@@ -242,7 +239,7 @@
             </div>
 
             <div class="info2">
-            <el-form-item class='edit-form'
+            <el-form-item
                 label="证书名称："
                 prop='CertificateName'>
                 <el-input
@@ -250,7 +247,7 @@
                     ></el-input>
             </el-form-item>
 
-            <el-form-item class='edit-form'
+            <el-form-item
                 label="颁发部门："
                 prop='AwardDepart'>
                 <el-input
@@ -258,7 +255,7 @@
                     ></el-input>
             </el-form-item>
 
-            <el-form-item class='edit-form'
+            <el-form-item
                 label="颁发时间："
                 prop='GetTime'>
                 <el-date-picker
@@ -282,6 +279,7 @@
             <el-button v-else type="primary" @click='save_business(business_list,certificate_list)'>提交</el-button>
             <el-button type="default" @click='reBack()'>返回</el-button>
         </div>
+    </el-card>
     </div>
 </template>
 <script>
@@ -304,9 +302,5 @@
     /*margin-left: 35%;*/
     /*text-align: center;*/
 }
-    .edit-form{
-        width:500px;
-       /* width:50%;
-        float:left;*/
-    }
+
 </style>

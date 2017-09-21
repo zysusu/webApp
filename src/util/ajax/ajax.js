@@ -9,7 +9,6 @@ import {
 	cbs,
 	gbs
 } from 'config/settings.js';
-
 // 动态设置本地和线上接口域名
 Vue.axios.defaults.baseURL = gbs.host;
 
@@ -83,7 +82,6 @@ module.exports = function (type, url, data, fn, {
 						errFn && errFn.call(this);
 					}
 				}
-
 			}
 			this.$store.dispatch('hide_loading');
 		}).catch((err) => {

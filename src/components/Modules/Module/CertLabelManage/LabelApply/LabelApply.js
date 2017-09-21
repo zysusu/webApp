@@ -35,6 +35,7 @@ module.exports = {
             var hh = JSON.parse(res.request.response);
             if(hh.status===200){
                 this.applyType = hh.data;
+                this.type = hh.data[0].CuitMoon_DictionaryCode;
             }else if(hh.status==404){
             	this.$message({
             		showClose: true,
@@ -47,7 +48,6 @@ module.exports = {
         handleAvatarSuccess(res, file) {
         	this.imageUrl = URL.createObjectURL(file.raw);
 			this.Labelapplication.Image = res.data.url;
-			// alert(this.Businessqualification.picUrl);
 		},
         getProducts(pagenum){
             // var pagenum = this.pagenum;
@@ -89,7 +89,8 @@ module.exports = {
             		message  : hh.msg,
             		type     : 'success'
             	});
-            window.location.reload();
+             this.dialogTableVisible = false;
+             this.getProducts(1);
             }else if(hh.status==404){
             	this.$message({
             		showClose: true,
@@ -105,15 +106,15 @@ module.exports = {
             this.axios.post("/index.php?r=Label/labelapply/get-labels",{pagesize:10,pagenum:1,ApplyBh:app})
             .then((res) => {
             var hh = JSON.parse(res.request.response);
-            if(hh.status===200){
-                this.LabelApplicationData = hh.data.labels;
-            }else if(hh.status==404){
-            	this.$message({
-            		showClose: true,
-            		message  : hh.msg,
-            		type     : 'error'
-            	});
-            }
+                if(hh.status===200){
+                    this.LabelApplicationData = hh.data.labels;
+                }else if(hh.status==404){
+                	this.$message({
+                		showClose: true,
+                		message  : hh.msg,
+                		type     : 'error'
+                	});
+                }
             });
         },
             initRouters(){

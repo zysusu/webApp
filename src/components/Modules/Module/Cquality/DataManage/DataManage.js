@@ -286,6 +286,7 @@ module.exports = {
             		message  : hh.msg,
             		type     : 'success'
             	});
+                this.dialogTableVisible = false; 
             }else if(hh.status==404){
             	this.$message({
             		showClose: true,
@@ -389,6 +390,7 @@ module.exports = {
             		message  : hh.msg,
             		type     : 'success'
             	});
+                this.dialogTableVisible = false; 
             }else if(hh.status==404){
             	this.$message({
             		showClose: true,

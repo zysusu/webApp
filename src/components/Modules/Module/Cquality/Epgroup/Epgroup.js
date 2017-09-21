@@ -12,6 +12,14 @@ module.exports = {
 			rightFlag:false,  //是否有添加权限
 			addBtn:true,
 			add_flag:0,
+			groupInfo2:{
+				ExpertLevel:'',
+				expertsID: "",
+				groupMember: [],
+				grouper: "",
+				ApplyBh: "",
+				Remark: ""
+			},
 			ExpertLevel:'',
 			groupInfo:{
 				ExpertLevel:'',
@@ -23,7 +31,9 @@ module.exports = {
 			},
 			level_Lists:[],  //级别的数组
 			peopleList:[],  //选择专家组后获取成员
+			peopleList2:[],  //选择专家组后获取成员
 			add_Lists:[],
+			add_Lists2:[],
 			group_rules: {
 				CuitMoon_UserName: [{
 					required: true,
@@ -118,11 +128,40 @@ module.exports = {
 		updateGroup(obj){
 			this.axios.post("/index.php?r=ClimateQuality/allocation-expertsgroup/get-edit",{Experts_Num:obj.Experts_Num})
                 .then((res) => {  
-                	var _this = this;
+                var _this = this;
+                  var hh = JSON.parse(res.request.response); 
+                   var theGroup = hh.data.expertgroup; 
+                    if(hh.status===200){
+                    	for(var i = 0;i<theGroup.length;i++){
+                       		if(hh.data.climate.Experts_Class == theGroup[i].expertsName){
+                       			_this.peopleList = theGroup[i].expertsPerson;
+                       			
+		                    }
+	                       _this.add_flag = 2;
+	                       _this.add_Lists2 = hh.data.expertgroup; 
+	                       _this.groupInfo2 = hh.data.climate;
+                       };
+                    }else{
+                         this.$message({
+                            showClose: true,
+                            message  : hh.msg,
+                            type     : 'error'
+                        });
+                    }
+                })
+		},
+		update_info(info){
+			info.expertsID = info.Experts_Class;
+			this.axios.post("/index.php?r=ClimateQuality/allocation-expertsgroup/update",info)
+                .then((res) => {  
                 var hh = JSON.parse(res.request.response);    
                     if(hh.status===200){
-                       _this.groupInfo = hh.data.climate;
-                       _this.add_flag = 1;
+                        this.$message({
+                            showClose: true,
+                            message  : hh.msg,
+                            type     : 'success'
+                        });
+                        this.add_flag = 0;
                     }else{
                          this.$message({
                             showClose: true,

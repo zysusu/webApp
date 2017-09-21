@@ -9,7 +9,7 @@
             </ul>
         </div> <!-- tree -->
     </el-col>
-    <div id="mainText">
+    <div id="mainText" v-show="!showChange && !searchFlag && !typeFlag" >
         <el-col v-if="!showChange" :span="24" class='actions-top'>
             <el-form :inline="true" :model='search_data' class="demo-form-inline">
                 <el-form-item>
@@ -64,7 +64,7 @@
                 </template>
             </el-table-column>
         </el-table>
-    <div class="block" v-show="!showChange && !searchFlag && !typeFlag" style="margin:20px 35px; float:right;">
+    <div class="block" style="margin:20px 35px; float:right;">
             <el-pagination
                 layout="total,prev, pager, next"
                 :page-size="pageSize"
@@ -91,7 +91,7 @@
      </div> <!--  分页的div -->
             <!-- 下面是修改页面 -->
   <div class="form" v-show="showChange">
-        <el-form label-width="100px" style="margin:20px;width:100%;min-width:600px;"
+        <el-form label-width="100px" style="width:100%;min-width:600px;"
             :model="news_data"
             :rules="rules"
             ref='news_data'>
@@ -146,7 +146,6 @@
     height:100%;
     overflow: visible;
     float:left;
-   /* border-right:3px solid #324157;*/
 }
 .tree{
     border:none;
@@ -154,6 +153,16 @@
     float:left;
     padding: 0;
     margin-left:-26px;
+}
+.tree li span{
+    width:150px;
+    height: 32px;
+    line-height: 32px;
+    padding-left: 8px;
+    background-color: #fff;
+}
+.tree li span:hover{
+    background-color: #e1e1e1;
 }
 .badge{
     background-color: transparent;
@@ -166,7 +175,7 @@
         float: right;
         border:1px solid #f1f1f1;
         padding:5px;
-        min-height: 100%;
+        min-height: 650px;
         height:auto;
         padding-left: 10px;
         border-left:3px solid #324157;
@@ -187,9 +196,6 @@
 
     .pagination {
         display: inline-block;
-    }
-    .el-dialog__body{
-
     }
 input[type="text"], input[type="password"]{
     width:220px !important;

@@ -109,7 +109,10 @@ module.exports = {
 						type:'success',
 						message:hh.msg,
 					});
-					window.location.reload();
+					_this.addChild = false;
+					_this.lookAll = false;
+					_this.getView();
+					//window.location.reload();
 				}else{
 					this.$message({
 						type:'error',

@@ -11,7 +11,7 @@ module.exports = {
 			showAll:false,
 			applica:[{ApplyPerson:'测试数据'}],
 			search_data:{
-				username:'',
+				Name:'',
 			},
 			tableData:{},  //证书表格
 			applyData:{}, //企业信息
@@ -41,32 +41,45 @@ module.exports = {
 	            }
 	        });
 		},
-		/*showMore(obj,index){
-			this.showAll = true;
-		},*/
+		
 		showMore(obj){
 			var bh = obj.ApplyBh;
+			var User = obj.ApplyPerson;
 			var _this = this;
 			this.editFlag = false;
 			this.showChild = true;
 			this.showAll = true;
+			this.applyData = obj;
+
 			this.axios.post('/index.php?r=ClimateQuality/authentication/get-apply-one',{ApplyBh:bh})
 			.then((res)=>{
 				var hh = JSON.parse(res.request.response);
 				_this.applyData = hh.data;
 			});
+			this.axios.post('/index.php?r=ClimateQuality/authentication/get-certificate-by-user',{user:User})
+			.then((res)=>{
+				var hh = JSON.parse(res.request.response);
+				_this.tableData = hh.data;
+			});
 		},
 		editView(obj){
 			var bh = obj.ApplyBh;
+			var User = obj.ApplyPerson;
 			this.viewBh = obj.ApplyBh;
 			var _this = this;
 			this.editFlag = true;
 			this.showChild = true;
 			this.showAll = true;
+			this.applyData = obj;
 			this.axios.post('/index.php?r=ClimateQuality/authentication/get-apply-one',{ApplyBh:bh})
 			.then((res)=>{
 				var hh = JSON.parse(res.request.response);
 				_this.applyData = hh.data;
+			});
+			this.axios.post('/index.php?r=ClimateQuality/authentication/get-certificate-by-user',{user:User})
+			.then((res)=>{
+				var hh = JSON.parse(res.request.response);
+				_this.tableData = hh.data;
 			});
 		},
 		submitView(obj,num){
@@ -87,6 +100,34 @@ module.exports = {
 				}
 			});
 		},
+		/*onSearch(val) {
+            var _this = this;
+            var name = this.search_data.Name;
+            this.axios.post('/index.php?r=AuthCenter/business-manage/search-business',{CampanyName:name,pagesize:_this.pageSize,pagenum:1})
+            .then((res)=>{
+                 var hh = JSON.parse(res.request.response);    
+                    if(hh.status===200){
+                        _this.totalNum = hh.data.total;
+                        _this.BussManager_list = hh.data.businessList;
+                        _this.searchFlag = true;
+                    }else{
+                         this.$message({
+                            showClose: true,
+                            message  : hh.msg,
+                            type     : 'error'
+                        });
+                }
+            });
+        },
+        handleCurrentChange2(val){
+            var _this = this;
+            this.axios.post('/index.php?r=AuthCenter/business-manage/search-business',{pagesize:_this.pageSize,pagenum:val})
+            .then((res)=>{
+                var hh = JSON.parse(res.request.response);
+                _this.totalNum = hh.data.total;
+                _this.BussManager_list = hh.data.businessList;
+        	});
+    	},   */
 		onChangeDate(val) {
 			this.user_list.CuitMoon_UserBirthday = val;
 		},

@@ -1,10 +1,14 @@
 <template>
-<!-- 数据展示 -->
-<div>
-	<el-select v-model="type" @change="typeChange" placeholder="请选择" v-if="active==1">
+ <div>
+	
+	<el-form v-if="active==1" :inline="true" style="margin-left: 30px; margin-bottom: 0px;" :model="formInline" class="demo-form-inline">
+	  <el-form-item label="认证类型：">
+	   <el-select v-model="type" @change="typeChange" placeholder="请选择">
 		<el-option v-for="item in applyType" :key="item.CuitMoon_DictionaryCode" :label="item.CuitMoon_DictionaryName" :value="item.CuitMoon_DictionaryCode">
 		</el-option>
-	</el-select>
+	  </el-select>
+	  </el-form-item>
+	</el-form>
 
 	<div style="width:100%" v-if="active==1" >
 		<el-table :data="productsData" stripe style="min-width: 100%">
@@ -16,16 +20,16 @@
 			</el-table-column>
             <!-- <el-table-column prop="resType" label="认证类型" min-width="25%">
 			</el-table-column> -->
-			<el-table-column prop="" label="管理申请">
+			<el-table-column prop="" v-if="sjFlag" label="管理申请">
 				<template scope="scope">
                        <el-button
                        size="small"
-                       type="primary"
+                       type="warning"
                        @click="viewApply(scope.$index,productsData)">管理申请</el-button>
                  </template>
 			</el-table-column>
 
-			<el-table-column prop="" label="管理领用">
+			<el-table-column prop="" v-if="sjFlag" label="管理领用">
 				<template scope="scope">
                        <el-button
                        size="small"
@@ -38,34 +42,35 @@
 				<template scope="scope">
                        <el-button
                        size="small"
-                       type="primary"
+                       type="info"
                        @click="manageLabel(scope.$index,productsData)">管理标签</el-button>
                  </template>
 			</el-table-column>
-
 		</el-table>
-		<el-pagination 
-      layout="prev, pager, next" 
-      :total="total" 
-      :current-page="pagenum"
-		@current-change="getProducts" :page-size="pagesize">
-		</el-pagination>
+	<div class="block" v-if="active==1" style="margin:20px 35px; float:right;">
+     	<el-pagination
+        layout="total,prev, pager, next"
+        :total="total" 
+        :current-page="pagenum"
+		@current-change="getProducts" 
+		:page-size="pagesize">
+      </el-pagination>
+    </div> <!--  分页的div -->
 
-
-	</div>
+</div>
 
 	<el-button
-	:plain="true"
 	type="success"
 	v-if="active!=1 && active!=5"
+	style="float:right; margin:10px 30px;"
 	@click="active=1">返回</el-button>
 	<el-button
-	:plain="true"
 	type="success"
 	v-if="active==5"
+	style="float:right; margin:10px 30px;"
 	@click="active=4">返回</el-button>
 
-	<el-table :data="LabelApplicationData" stripe border style="width: 100%" v-if="active==2">
+	<el-table :data="LabelApplicationData" border style="width:100%" v-if="active==2">
 		<el-table-column prop="ApplyPerson" label="申请商家">
 		</el-table-column>
 		<el-table-column prop="applyType" label="标签类型">
@@ -79,16 +84,16 @@
 		</el-table-column>
 		<el-table-column prop="LabelMakeStatus" label="制作状态">
 		</el-table-column>
-		<el-table-column prop="" class="longBtn" style="min-width:190px !important;" label="管理标签">
+		<el-table-column prop="" class="longBtn" style="width:220px !important;" label="管理标签">
 			<template scope="scope">
 				   <el-button
 				   size="small"
-				   type="primary"
+				   type="info"
 				   v-if="LabelApplicationData[scope.$index].LabelMakeStatus=='制作完成'"
 				   @click="downloadLabel(scope.$index,LabelApplicationData)">下载</el-button>
 				   <el-button
 				  size="small"
-				  type="danger"
+				  type="warning"
 				  v-if="LabelApplicationData[scope.$index].LabelMakeStatus=='未制作'"
 				  @click="makeLabel(scope.$index,LabelApplicationData)">制作</el-button>
 				  <el-button
@@ -102,9 +107,15 @@
 			 </template>
 		</el-table-column>
 	</el-table>
-	<el-pagination layout="prev, pager, next" v-if="active==2" :total="totalLabel" :current-page="pagenumLabel"
-	@current-change="" :page-size="pagesizeLabel">
-	</el-pagination>
+	<div class="block" v-if="active==2" style="margin:20px 35px; float:right;">
+     	<el-pagination
+        layout="total,prev, pager, next"
+        :total="totalLabel" 
+        :current-page="pagenumLabel"
+		@current-change="" 
+		:page-size="pagesizeLabel">
+      </el-pagination>
+    </div> <!--  分页的div -->
 
 	<el-table :data="LYdata" stripe border style="min-width: 100%" v-if="active==3">
 		<el-table-column prop="ReceivePerson" label="领用人">
@@ -127,9 +138,17 @@
 			 </template>
 		</el-table-column>
 	</el-table>
-	<el-pagination layout="prev, pager, next" v-if="active==3" :total="totalLY" :current-page="pagenumLY"
+	<!-- <el-pagination layout="prev, pager, next" v-if="active==3" :total="totalLY" :current-page="pagenumLY"
 	@current-change="getLYManage" :page-size="pagesizeLY">
-	</el-pagination>
+	</el-pagination> -->
+	<div class="block" v-if="active==3" style="margin:20px 35px; float:right;">
+     <el-pagination
+        layout="total,prev, pager, next"
+        :page-size="pagesizeLY"
+        :total="totalLY"
+        @current-change='getLYManage'>
+      </el-pagination>
+     </div> <!--  分页的div -->
 
 
 	<el-table :data="recordData" border stripe style="width: 100%" v-if="active==4">
@@ -151,7 +170,7 @@
 			<template scope="scope">
 				  <el-button
 				  size="small"
-				  type="primary"
+				  type="info"
 				  @click="viewRecord(scope.$index,recordData)">查看</el-button>
 			 </template>
 		</el-table-column>
@@ -170,11 +189,18 @@
 			 </template>
 		</el-table-column>
 	</el-table>
-	<el-pagination layout="prev, pager, next" v-if="active==4" :total="totalRecord" :current-page="pagenumRecord"
+	<!-- <el-pagination layout="prev, pager, next" v-if="active==4" :total="totalRecord" :current-page="pagenumRecord"
 	@current-change="getRecord" :page-size="pagesizeRecord">
-	</el-pagination>
-
-
+	</el-pagination> -->
+	<div class="block" v-if="active==4" style="margin:20px 35px; float:right;">
+      <el-pagination
+        layout="total,prev, pager, next"
+        :total="totalRecord" 
+        :current-page="pagenumRecord"
+		@current-change="getRecord" 
+		:page-size="pagesizeRecord">
+      </el-pagination>
+    </div> <!--  分页的div -->
 	<!-- 管理标签 -->
 	<el-table :data="scanData" stripe border align='center' style="min-width: 100%" v-if="active==5">
 		<el-table-column prop="ScanID" label="扫描序号">
@@ -184,10 +210,19 @@
 		<el-table-column prop="ScanPlace" label="扫描地点">
 		</el-table-column>
 	</el-table>
-	<el-pagination layout="prev, pager, next" v-if="active==5" :total="totalScan"
+	<!-- <el-pagination layout="prev, pager, next" v-if="active==5" :total="totalScan"
 	:current-page="pagenumScan"
 	@current-change="getRecord" :page-size="pagesizeScan">
-	</el-pagination>
+	</el-pagination> -->
+	<div class="block" v-if="active==5" style="margin:20px 35px; float:right;">
+     	<el-pagination
+        layout="total,prev, pager, next"
+        :total="totalScan" 
+        :current-page="pagenumScan"
+		@current-change="getRecord" 
+		:page-size="pagesizeScan">
+      </el-pagination>
+    </div> <!--  分页的div -->
 
 	<el-dialog title="编辑申请" :visible.sync="dialogTableVisible">
 		<el-form :label-position="a" label-width="80px" :model="Labelapplication">

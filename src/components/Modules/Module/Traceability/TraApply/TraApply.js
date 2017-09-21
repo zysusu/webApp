@@ -10,6 +10,7 @@ module.exports = {
             searchFlag:false,
 			imageSrc:'',
 			imageUrl:'',
+			tableData:[],  //证书表格
 			apply_data: [],
 			apply_list:[],
 			area_list:[],
@@ -20,12 +21,18 @@ module.exports = {
 				GetTime:'',
 				PictureUrl:''
 			},//证书信息
+			Businessqualification:{
+				Name:"",
+				awardTime:"",
+				publishUnit:"",
+				picUrl:"",
+			},
 			tableInfo:'',
 			province:{},
 			city:{},
 			country:{},
 			areaList:{
-				value : 'CuitMoon_AreaName',
+				value : 'CuitMoon_AreaCode',
 				label : 'CuitMoon_AreaName',
 				children : 'child'
 			},
@@ -221,9 +228,9 @@ module.exports = {
 		}
 	},
 	methods: {
-		save_info(product,creden){
+		save_info(product){
 			var _this = this;
-			this.axios.post('/index.php?r=origin/apply/create',{product:product,creden:_this.credenInfo})
+			this.axios.post('/index.php?r=origin/apply/create',{product:product})
 			.then((res)=>{
 				var hh = JSON.parse(res.request.response);
 				if(hh.status===200){
@@ -242,7 +249,7 @@ module.exports = {
 				}
 			});	
 		},
-		 updateTime(val){
+		updateTime(val){
         	this.credenInfo.GetTime = val;
         },
         upApply(obj){
@@ -291,24 +298,102 @@ module.exports = {
                	}    
             });
 		},
-		handleCurrentChange2(val){
-			var _this = this;
-			var name = _this.search_data.Name;
-            this.axios.post("/index.php?r=origin/apply/search",{OriginName:name,pagesize:_this.pageSize,pagenum:val})
-             .then((res) => {  
-                var hh = JSON.parse(res.request.response);
-                if(hh.status===200){
-                	_this.apply_list = hh.data.Productapply;
-                	_this.totalNum = parseInt(hh.data.total);
-                }
-                else{
- 					this.$message({ 
-                        showClose: true,
-                        message  : hh.msg,
-                        type     : 'error'
-                    });
-               	}
-                   
+		//上传证书
+		addCertificate(){
+			var _self = this;
+			var Businessqualification = this.Businessqualification;
+			this.axios.post("/index.php?r=ClimateQuality/authentication/add-certificate",{Businessqualification})
+            .then((res) => {
+            var hh = JSON.parse(res.request.response);
+            if(hh.status===200){
+				_self.getCertificate();
+				this.$message({
+
+            		showClose: true,
+            		message  : hh.msg,
+            		type     : 'success'
+            	});
+            	var initBusiness = {
+					Name:"",
+					awardTime:"",
+					publishUnit:"",
+					picUrl:"",
+				};
+				_self.Businessqualification = initBusiness;
+				_self.imageUrl = '';
+            }else if(hh.status==404){
+            	this.$message({
+            		showClose: true,
+            		message  : hh.msg,
+            		type     : 'error'
+            	});
+            }
+            });
+		},
+		getCertificate(){
+			this.axios.post("/index.php?r=ClimateQuality/authentication/get-certificate",{})
+            .then((res) => {
+            var hh = JSON.parse(res.request.response);
+            if(hh.status===200){
+				this.tableData = hh.data;
+            }else if(hh.status==404){
+            	this.$message({
+            		showClose: true,
+            		message  : hh.msg,
+            		type     : 'error'
+            	});
+            	}
+            });
+		},
+		deleteCertificate(index,row){
+			this.axios.post("/index.php?r=ClimateQuality/authentication/delete-certificate",{BusinessID:row[index].BusinessID})
+            .then((res) => {
+            var hh = JSON.parse(res.request.response);
+            if(hh.status===200){
+				row.splice(index, 1);
+                this.$message({
+            		showClose: true,
+            		message  : hh.msg,
+            		type     : 'success'
+            	});
+            }else if(hh.status==404){
+            	this.$message({
+            		showClose: true,
+            		message  : hh.msg,
+            		type     : 'error'
+            	});
+            }
+            });
+		},
+		//保存证书
+		addCertificate(){
+			var _self = this;
+			var Businessqualification = this.Businessqualification;
+			this.axios.post("/index.php?r=ClimateQuality/authentication/add-certificate",{Businessqualification})
+            .then((res) => {
+            var hh = JSON.parse(res.request.response);
+            if(hh.status===200){
+				_self.getCertificate();
+				this.$message({
+            		showClose: true,
+            		message  : hh.msg,
+            		type     : 'success'
+            	});
+            	var initBusiness = {
+					Name:"",
+					awardTime:"",
+					publishUnit:"",
+					picUrl:"",
+				};
+				_self.Businessqualification = initBusiness;
+				_self.imageUrl = '';
+            }else if(hh.status==404){
+            	this.$message({
+            		showClose: true,
+            		message  : hh.msg,
+            		type     : 'error'
+            	});
+            }
             });
 		},
 		/**
@@ -333,39 +418,10 @@ module.exports = {
 		},
 
 
-		/**
-		 * 改变当前页事件
-		 * @param  {number} page 当前页码
-		 */
-		/*onChangeCurrentPage(page) {
-			this.getList({
-				page,
-				fn: () => {
-					this.setPath('page', page);
-				}
-			});
-		},*/
-		/**
-		 * 改变每页显示数量事件
-		 * @param  {number} size 当前每页显示数量
-		 */
-		/*onChangePageSize(page_size) {
-			this.getList({
-				page_size,
-				fn: () => {
-					this.setPath('page_size', page_size);
-				}
-			});
-		},*/
-		/**
-		 * 查看文章信息事件
-		 * @param  {object} article 当前文章信息对象
-		 */
 		onSelectArticle(apply) {
 			this.dialog.show         = true;
 			this.dialog.apply_info = apply;
 		},
-
 		onShowApply(info){
 			var ID = info.OriginID;
 			this.lookInfo = true;
@@ -375,9 +431,14 @@ module.exports = {
 				var hh = JSON.parse(res.request.response);
 				_this.showDuctInfo = hh.data;
 			});
+			var User = info.ApplyPerson;
+			this.axios.post('/index.php?r=ClimateQuality/authentication/get-certificate',{user:User})
+			.then((res)=>{
+				var hh = JSON.parse(res.request.response);
+				_this.tableInfo = hh.data;
+			});
 		},
 		onCloseView() {
-
 		},
 		/**
 		 *添加
@@ -406,7 +467,7 @@ module.exports = {
                     _this.area_list = hh.data;
                });
         },
-         handleCurrentChange(val){
+        handleCurrentChange(val){
             var _this = this;
             this.axios.post('/index.php?r=origin/apply/index',{pagesize:_this.pageSize,pagenum:val})
             .then((res)=>{
@@ -414,11 +475,34 @@ module.exports = {
                 _this.totalNum = parseInt(hh.data.total);
                 _this.apply_list = hh.data.Apply;
             });
-        }, 
-        handleAvatarSuccess(res, file) {
+        },
+        handleCurrentChange2(val){
+			var _this = this;
+			var name = _this.search_data.Name;
+            this.axios.post("/index.php?r=origin/apply/search",{OriginName:name,pagesize:_this.pageSize,pagenum:val})
+             .then((res) => {  
+                var hh = JSON.parse(res.request.response);
+                if(hh.status===200){
+                	_this.apply_list = hh.data.Productapply;
+                	_this.totalNum = parseInt(hh.data.total);
+                }
+                else{
+ 					this.$message({ 
+                        showClose: true,
+                        message  : hh.msg,
+                        type     : 'error'
+                    });
+               	}   
+            });
+		}, 
+       /* handleAvatarSuccess(res, file) {
           this.imageUrl = URL.createObjectURL(file.raw);
           this.credenInfo.PictureUrl = file.response.data.url;
-       },
+       },*/
+       handleAvatarSuccess1(res, file) {
+        	this.imageUrl = URL.createObjectURL(file.raw);
+			this.Businessqualification.picUrl = res.data.url;
+		},
      	beforeAvatarUpload(file) {
         // const isJPG = file.type === 'image/jpeg';
         // const isLt2M = file.size / 1024 / 1024 < 2;
@@ -436,6 +520,7 @@ module.exports = {
 		this.imageSrc = gbs.host;
 		this.imgAction = gbs.host+"/index.php?r=common/upload";
 		this.getData();
+		this.getCertificate();
 	},
 	 watch: {
         '$route' (to, from) {

@@ -1,3 +1,6 @@
+import {
+   gbs
+} from 'config/settings.js';
 module.exports = {
 	name   : 'traCheck',
 	data() {
@@ -5,7 +8,9 @@ module.exports = {
 			 totalNum:0,
 			 pageSize:10,
 			 searchFlag:false,
+			 imageSrc:'',
 			scoreData:[],
+			tableData:[],
 			showCheck:false,
 			product_list:[],
 			productInfo:{},
@@ -41,10 +46,10 @@ module.exports = {
 			 this.axios.post("/index.php?r=origin/approval/index",{pagesize:_this.pageSize,pagenum:1})
 	         .then((res) => {  
 	            var hh = JSON.parse(res.request.response);
-	            if(hh.status==200){
-	            	_this.product_list = hh.data.Productapply;	
-	             	_this.totalNum = parseInt(hh.data.total);	
-	            } 
+	            	if(hh.status==200){
+		            	_this.product_list = hh.data.Productapply;	
+		             	_this.totalNum = parseInt(hh.data.total);	
+	            	} 
 	            });
 		},
 		handleCurrentChange(val){
@@ -66,6 +71,13 @@ module.exports = {
 			this.originID = info.OriginID;
 			this.productInfo = info;
 			this.credenInfo = info;
+			var _this = this;
+			var User = info.ApplyPerson;
+			this.axios.post('/index.php?r=ClimateQuality/authentication/get-certificate',{user:User})
+			.then((res)=>{
+				var hh = JSON.parse(res.request.response);
+				_this.tableData = hh.data;
+			});
 		},
 		onSearch() {
 			this.searchFlag = true;
@@ -126,6 +138,7 @@ module.exports = {
                             message  : "审核成功",
                             type     : 'success'
                         });
+                       this.getView(); 
 	             	}else{
 	             		this.$message({
                             showClose: true,
@@ -147,6 +160,7 @@ module.exports = {
 	
 	},
 	mounted() {
+		this.imageSrc = gbs.host;
 		this.getView();
 	},
 

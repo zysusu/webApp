@@ -167,15 +167,14 @@
                           </el-option>
                         </el-select>
                 </el-form-item>
-
             <el-form-item class="edit-form" 
                 label='等级描述：'
                 prop="ApproveLevelDescription">
                 <el-input type='textarea'               
                     v-model="dialog3.mod_news.ApproveLevelDescription"></el-input>
             </el-form-item>
-
             </el-form>
+            
             <span slot="footer" class="dialog-footer">
             <el-button type="primary" @click="addGrade(dialog3.mod_news)">提交</el-button>
                 <el-button @click="dialog3.show = false">取 消</el-button>              

@@ -100,10 +100,11 @@
 <!-- 添加页面结束 -->
  <!-- 下面是查看页面 -->
   <div class="form" v-show="showNews">
+   <el-card class="box-card" style="padding:0; width:94%; margin-left: 3%; background-color: #f9f9f9;">
         <el-form label-width="100px" style="margin:20px;width:100%;min-width:600px;"
             :model="NewsInfo">
             <el-form-item label="新闻标题：" prop='newstitle' style="width:600px;">
-                
+               <strong>{{NewsInfo.newstitle}}</strong>
             </el-form-item>
             <el-form-item label="新闻内容：" style="width:986px;" prop='newscontent'>
             <div id="NewCont" style="min-height:400px; max-height:750px;"></div>
@@ -112,6 +113,7 @@
                 <el-button type="primary" @click='reBack()'>返回</el-button>
             </el-form-item>
         </el-form>
+    </el-card>
 </div>
 <!-- 查看页面结束 -->
  </div>

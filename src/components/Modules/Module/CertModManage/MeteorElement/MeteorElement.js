@@ -32,7 +32,7 @@ module.exports = {
             dialog1: {
                 show: false,
                 element_data: {
-                    TyepName:'',
+                    ElementType:'',
                 },
             },
             dialog2: {
@@ -46,7 +46,7 @@ module.exports = {
     methods: {
         showDiv(){
             this.dialog1.show = true;  
-            this.dialog1.element_data = {TyepName:'',}; 
+            this.dialog1.element_data = {ElementType:'',}; 
         },
          showUpdate(module) {
             this.dialog1.show = true;
@@ -66,7 +66,8 @@ module.exports = {
                         type:'success',
                         message:hh.msg
                     });
-                    window.location.reload();
+                    this.dialog1.show=false;
+                    this.getElemets();
                  }else{
                     this.$message({
                             showClose: true,
@@ -77,7 +78,28 @@ module.exports = {
             });
 
         },
-        onDelete(ele){
+        updateElement(obj){
+             this.axios.post('/index.php?r=AuthModel/weather-element/edit-commit',obj)
+            .then((res)=>{
+                 var hh = JSON.parse(res.request.response);
+                 if(hh.status===200){
+                    this.$message({
+                        showClose: true,
+                        type:'success',
+                        message:hh.msg
+                    });
+                    this.dialog1.show=false;
+                    this.getElemets();
+                 }else{
+                    this.$message({
+                            showClose: true,
+                            message  : hh.msg,
+                            type     : 'error'
+                    });
+                 }
+            });
+        },
+        onDelete(ele,index){
             var number = ele.ElementNumber;
              this.$confirm('你确定删除该条数据吗?', '删除数据', {
                 confirmButtonText: '确定',
@@ -93,6 +115,7 @@ module.exports = {
                             message  : hh.msg,
                             type     : 'success'
                     });
+                this.element_list.splice(index,1);
                  }else{
                     this.$message({
                             showClose: true,
@@ -210,12 +233,10 @@ module.exports = {
 
     mounted() {
         this.getElemets();
-        this.getStation();
         this.initRouters();  //请求的函数丶放在它后面
     },
     watch: {
         '$route' (to, from) {
-            this.getStation();
         }
     }
 }

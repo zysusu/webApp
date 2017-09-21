@@ -13,6 +13,7 @@ module.exports = {
 				{name: '认证报告.doc', 
 				url: '',}
 			 ],
+			downUrl:'',
 			fileData:[],
 			imageUrl:'',
 			imageUrl1:'',
@@ -47,10 +48,10 @@ module.exports = {
 				}]
 			},
         names:[
-       				{name1:'111',
-                	name2:'222'},
-                	{name1:'1212',
-                	name2:'222232'},],
+       		{name1:'111',
+              	name2:'222'},
+              	{name1:'1212',
+              	name2:'222232'},],
 		}
 	},
 	methods: {
@@ -59,8 +60,10 @@ module.exports = {
 			this.axios.post('/index.php?r=ClimateQuality/buildfile/index',{pagesize:_this.pageSize,pagenum:1})
 			.then((res)=>{
 				var hh = JSON.parse(res.request.response);
-				_this.totalNum = parseInt(hh.data.total);
-				_this.fileData = hh.data.Reportinfomation;
+				if(hh.status==200){
+					_this.totalNum = parseInt(hh.data.total);
+					_this.fileData = hh.data.Reportinfomation;
+				}
 			});
 		},
 		handleCurrentChange(val){
@@ -68,9 +71,11 @@ module.exports = {
             this.axios.post('/index.php?r=ClimateQuality/buildfile/index',{pagesize:_this.pageSize,pagenum:val})
             .then((res)=>{
                 var hh = JSON.parse(res.request.response);
+                if(hh.status==200){
                 _this.totalNum = parseInt(hh.data.total);
                 _this.fileData = hh.data.Reportinfomation;
-       	 });
+              }
+       	  });
 		}, 
 		showMore(obj){
 			this.imageUrl = '';
@@ -82,8 +87,10 @@ module.exports = {
 			this.axios.post('/index.php?r=ClimateQuality/buildfile/add1',{ApplyBh:id})
 			.then((res)=>{
 				var hh = JSON.parse(res.request.response);
-				_this.threeNames = hh.data.Apply;  //此处后台返回值不应该为数组
-				_this.BearInfo = hh.data.Bearinginfo;
+				if(hh.status==200){
+					_this.threeNames = hh.data.Apply;  //此处后台返回值不应该为数组
+					_this.BearInfo = hh.data.Bearinginfo;
+				}
 			});
 		},
 		showAll(obj){
@@ -94,14 +101,17 @@ module.exports = {
 			this.axios.post('/index.php?r=ClimateQuality/buildfile/view',{ApplyBh:id})
 			.then((res)=>{
 				var hh = JSON.parse(res.request.response);
-				_this.fileInfomation = hh.data.Apply;  //此处后台返回值不应该为数组
-				_this.BearInfo = hh.data.Bearinginfo;
-				_this.fileList1[0].url = imageSrc+hh.data.Apply.certificateAttachment;
+				if(hh.status==200){
+					_this.fileInfomation = hh.data.Apply;  //此处后台返回值不应该为数组
+					_this.BearInfo = hh.data.Bearinginfo;
+					_this.downUrl = hh.data.Apply.certificateAttachment;
+					_this.fileList1[0].url = imageSrc+hh.data.Apply.certificateAttachment;
+				}
 			});
 
 		},
 		save_info(info){
-			this.axios.post('/index.php?r=ClimateQuality/buildfile/add2',info)
+			this.axios.post('/index.php?r=ClimateQuality/buildfile/add2',this.fileInfo)
 			.then((res)=>{
 				var hh = JSON.parse(res.request.response);
 	            if(hh.status===200){
@@ -110,7 +120,8 @@ module.exports = {
 	                    message  : hh.msg,
 	                    type     : 'success'
 	                });
-	               // this.$router.push('/module/acManage/speManage');
+	                this.lookAll = false;
+	                this.showChild = false;
 	            }else{
 	                this.$message({
 	                    showClose: true,
@@ -129,7 +140,7 @@ module.exports = {
                  var hh = JSON.parse(res.request.response);    
                     if(hh.status===200){
                     	_this.totalNum = parseInt(hh.data.total);
-                        this.fileData = hh.data.Reportinfomation;
+                        this.fileData = hh.data;
                     }else{
                          this.$message({
                             showClose: true,
@@ -145,9 +156,11 @@ module.exports = {
             this.axios.post('/index.php?r=ClimateQuality/buildfile/search',{ProductName:name,pagesize:_this.pageSize,pagenum:val})
             .then((res)=>{
                 var hh = JSON.parse(res.request.response);
-                _this.totalNum = parseInt(hh.data.total);
-                _this.fileData = hh.data.Reportinfomation;
-       	 });
+                if(hh.status==200){
+	                _this.totalNum = parseInt(hh.data.total);
+	                _this.fileData = hh.data.Reportinfomation;
+            	}
+       	  });
 		}, 
 		onChangeDate(val) {
 			this.user_list.CuitMoon_UserBirthday = val;
@@ -159,10 +172,21 @@ module.exports = {
 			this.showChild = false;
 			this.lookAll = false;
 		},
+		downLoad(){
+			window.location.href = this.imageSrc + this.downUrl;
+		},
 		// 上传照片
 		handleAvatarSuccess(res, file) {
           this.imageUrl = URL.createObjectURL(file.raw);
-          this.fileInfo.AttachmentURL = file.response.data.url;
+          if(file.response.data.url){
+          	 this.fileInfo.AttachmentURL = file.response.data.url;
+          }else{
+          	  this.$message({
+                showClose: true,
+                message  : '照片上传失败！',
+                type     : 'error'
+              });
+          }
        },
        // 上传认证证书
        handleAvatarSuccess1(res, file) {

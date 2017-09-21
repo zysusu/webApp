@@ -72,6 +72,28 @@ module.exports = {
                     },
                     trigger: 'blur'
                 }],
+                MobilePhone:[{
+                	 validator:(rule, value, callback)=>{
+                        if (!/^[0-9]*$/.test(value)) {
+                            callback(new Error('输入格式不正确，仅支持全数字'));
+                        }else if(value.length!=11){
+                            callback(new Error('输入的手机号应为11位'));
+                        } else {
+                            callback();
+                        }
+                    },
+                    trigger: 'blur'
+                }],
+                MailBox:[{
+                	validator:(rule, value, callback)=>{
+                        if (!/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value)) {
+                            callback(new Error('邮箱格式不对，请重新输入'));
+                        }else {
+                            callback();
+                        }
+                    },
+                    trigger: 'blur'
+                }],
 				CampanyName: [{
 					required: true,
 					message : '单位名称不能为空！',
@@ -154,7 +176,8 @@ module.exports = {
 	            .then((res) => {  
 	            var hh = JSON.parse(res.request.response);
 	             _this.business_list = hh.data;
-	            // _this. = business_list.Certificate;
+	             _this.imageUrl1 = _this.imageSrc+hh.data.Logo;
+	             _this.business_list.Certificate = hh.data.certificate;
 	            });
 			}
 		 },
@@ -185,11 +208,15 @@ module.exports = {
 				GetTime: obj.GetTime
         	};
         	this.business_list.Certificate.push(list);
-        	this.certificate_list = this.initCertFicate;
-        	// this.certificate_list.CertificateName = '';
-        	// this.certificate_list.PictureUrl = '';
-        	// this.certificate_list.AwardDepart = '';
-        	// this.certificate_list.GetTime = '';
+        	var initCertFicate = {
+				CertificateName : '',
+				PictureUrl : '',
+				GetTime : '',
+				AwardDepart : '',
+				Remark : ''
+			};
+			this.certificate_list = initCertFicate;
+			this.imageUrl2 = '';
         },
         deleteCertificate(index){
         	this.business_list.Certificate.splice(index,1);
@@ -243,6 +270,27 @@ module.exports = {
 		save_business(businesslist,certificate_list) {
 			var _this = this;
             this.axios.post("/index.php?r=AuthCenter/business-manage/add-business",_this.business_list)
+            .then((res) => {
+            var hh = JSON.parse(res.request.response);
+            if(hh.status===200){
+            	this.$message({
+            		showClose:true,
+            		message:hh.msg,
+            		type:"success"
+            	});
+            this.$router.push('/module/acManage/bussManage');
+            }else{
+            	this.$message({
+            		showClose:true,
+            		message:hh.msg,
+            		type:"error"
+            	});
+             }
+          });
+		},
+		update_business(businesslist,certificate_list){
+			var _this = this;
+            this.axios.post("/index.php?r=AuthCenter/business-manage/update",_this.business_list)
             .then((res) => {
             var hh = JSON.parse(res.request.response);
             if(hh.status===200){

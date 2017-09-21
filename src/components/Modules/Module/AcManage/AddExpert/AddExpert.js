@@ -62,6 +62,38 @@ module.exports = {
                     },
                     trigger: 'blur'
                 }],
+                TEL:[{
+                    validator:(rule, value, callback)=>{
+                        if (!/^[0-9]*$/.test(value)) {
+                            callback(new Error('输入格式不正确，仅支持全数字'));
+                        }else if(value.length!=11){
+                            callback(new Error('输入的手机号应为11位'));
+                        } else {
+                            callback();
+                        }
+                    },
+                    trigger: 'blur'
+                }],
+                QQ:[{
+                    validator:(rule, value, callback)=>{
+                        if (!/^[0-9]*$/.test(value)) {
+                            callback(new Error('输入格式不正确，仅支持全数字'));
+                        }else {
+                            callback();
+                        }
+                    },
+                    trigger: 'blur'
+                }],
+                MailBox:[{
+                    validator:(rule, value, callback)=>{
+                        if (!/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value)) {
+                            callback(new Error('邮箱格式不对，请重新输入'));
+                        }else {
+                            callback();
+                        }
+                    },
+                    trigger: 'blur'
+                }],
 				Expertname: [{
 					required: true,
 					message : '专家名不能为空！',

@@ -63,8 +63,10 @@ module.exports = {
 			 this.axios.post("/index.php?r=ClimateQuality/progresscheck/index",{pagesize:_this.pageSize,pagenum:1})
 	                .then((res) => {  
 	                var hh = JSON.parse(res.request.response);
+	                if(hh.status==200){
 	                	_this.productInfo = hh.data.Apply;
 	                	_this.totalNum = parseInt(hh.data.total);
+	                }
 	              });
 		  },
 		 handleCurrentChange(val){

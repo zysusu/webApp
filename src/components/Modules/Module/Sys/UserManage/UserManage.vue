@@ -1,21 +1,22 @@
 <template>
     <div class="form">
     <el-col :span="4" class="treeMenu">
-    <el-tree
-          class="leftTree"
-          :data="area_list"
-          :props="menuProps"
-          accordion
-          @node-click="handleNodeClick">
-    </el-tree>
+        <el-tree
+              class="leftTree"
+              :data="area_list"
+              :props="menuProps"
+              accordion
+              style="margin-right: 8px;"
+              @node-click="handleNodeClick">
+        </el-tree>
     </el-col>
     <div id="mainText">
         <el-col :span="24" class='actions-top'>
-            <el-form :inline="true" :model='search_data' class="demo-form-inline">
+            <el-form :inline="true" :model='search_data' class="demo-form-inline" v-if="!add_flag">
                 <el-form-item>
                     <el-input placeholder="姓名"
-                              v-model='search_data.username'
-                              clear></el-input>
+                        v-model='search_data.username'
+                        clear></el-input>
                 </el-form-item>
             
                 <el-form-item>
@@ -41,7 +42,7 @@
                     align="center">
             </el-table-column>
             <el-table-column
-                    prop="CuitMoon_UserCellphone    "
+                    prop="CuitMoon_UserCellphone"
                     label="手机号码"
                     align="center">
             </el-table-column>
@@ -88,7 +89,6 @@
                             icon='delete'
                             size="mini"
                             @click='onDeleteUser(scope.row,scope.$index)'></el-button>
-
                 </template>
             </el-table-column>
         </el-table>
@@ -98,9 +98,10 @@
             :model="user_list"
             :rules='users_rules'
             ref='user_list'>
-            <el-form-item class='edit-form' 
+            <el-form-item
+                class="widClass" 
                 :disabled='true'
-                label="用户名" 
+                label="用户名：" 
                 prop='CuitMoon_UserName'>
                 <el-input
                         v-if="!editFlag"
@@ -114,49 +115,54 @@
                         placeholder='登录名'></el-input>
             </el-form-item>
 
-             <el-form-item class='edit-form'
+            <el-form-item
+                class="widClass"
                 :disabled='true' 
-                label="密码" 
-                v-if="!editFlag" 
+                label="密码：" 
+                v-show="!editFlag" 
                 prop='CuitMoon_UserPassWord'>
                 <el-input
-                        type='password'
-                        v-model="user_list.CuitMoon_UserPassWord"></el-input>
+                    type='password'
+                    v-model="user_list.CuitMoon_UserPassWord"></el-input>
             </el-form-item>
-            <el-form-item class='edit-form'
-                v-if="!editFlag"
+            <el-form-item
+                class="widClass"
+                v-show="!editFlag"
                 :disabled='true'
-                label="确认密码"
+                label="确认密码："
                 prop='checkPassword'>
                 <el-input
-                        type='password'
-                        v-model="user_list.checkPassword"></el-input>
+                    type='password'
+                    v-model="user_list.checkPassword"></el-input>
             </el-form-item>
-            <el-form-item class='edit-form' 
-                label="姓名" 
+            <el-form-item
+                class="widClass"
+                label="姓名：" 
                 prop='CuitMoon_UserRealName'>
                 <el-input 
                     v-model="user_list.CuitMoon_UserRealName"></el-input>
             </el-form-item>
-             <el-form-item class='edit-form'
+             <el-form-item
+                class="widClass"
                 :disabled='true' 
-                label="性别" 
+                label="性别：" 
                 prop='CuitMoon_UserSex'>
-                <template>
+                <!-- <template> -->
                   <el-select v-model="user_list.CuitMoon_UserSex" placeholder="请选择">
                     <el-option
-                        value="1"
+                      value="1"
                       label="男">
                     </el-option>
                     <el-option
-                        value="0"
+                      value="0"
                       label="女">
                     </el-option>
                   </el-select>
-                </template>
+               <!--  </template> -->
             </el-form-item>
             <el-form-item  
-                label="地区" 
+                class="widClass"
+                label="地区：" 
                 prop='CuitMoon_AreaID'>
                 <el-cascader
                     v-model="user_list.CuitMoon_AreaID" 
@@ -169,57 +175,64 @@
                   :show-all-levels="false"></el-cascader> -->
             </el-form-item>
 
-            <el-form-item class='edit-form' 
-                label="生日" 
+            <el-form-item
+                class="widClass"
+                label="生日：" 
                 prop='CuitMoon_UserBirthday'>
                 <el-col :span="11">
                     <el-date-picker style="width: 100%;" type="date" placeholder="选择日期" v-model="user_list.CuitMoon_UserBirthday" format='yyyy-MM-dd' @change='onChangeDate'></el-date-picker>
                 </el-col>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
-                label="手机" 
+            <el-form-item
+                class="widClass"
+                label="手机：" 
                 prop='CuitMoon_UserCellphone'>
                 <el-input 
                     v-model="user_list.CuitMoon_UserCellphone" 
                     ></el-input>
             </el-form-item>
-            <el-form-item class='edit-form' 
-                label="QQ" 
+            <el-form-item
+                class="widClass"
+                label="QQ：" 
                 prop='CuitMoon_UserQQ'>
                 <el-input 
                     v-model="user_list.CuitMoon_UserQQ" 
                     ></el-input>
             </el-form-item>
 
-                <el-form-item class='edit-form' 
-                label="MSN" 
+            <el-form-item 
+                class="widClass"
+                label="MSN：" 
                 prop='CuitMoon_UserMSN'>
                 <el-input 
                     v-model="user_list.CuitMoon_UserMSN" ></el-input>
             </el-form-item>
         
-            <el-form-item class='edit-form' 
-                label="Eamil" 
+            <el-form-item
+                class="widClass"
+                label="Eamil：" 
                 prop='CuitMoon_UserEmail'>
                 <el-input 
                     v-model="user_list.CuitMoon_UserEmail" 
                     ></el-input>
             </el-form-item>
-            <el-form-item class='edit-form' 
-                label="地址" 
+            <el-form-item 
+                class="widClass"
+                label="地址：" 
                 prop='CuitMoon_UserAddress'>
                 <el-input 
                     v-model="user_list.CuitMoon_UserAddress" 
                     ></el-input>
             </el-form-item>
-            <el-form-item class='edit-form' 
-                label="邮编" 
+          <!--   <el-form-item
+                class="widClass"
+                label="邮编：" 
                 prop='CuitMoon_ModuleURL'>
                 <el-input 
                     v-model="user_list.CuitMoon_ModuleURL" 
                     ></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
                 <el-button v-if="user_list.CuitMoon_UserID" type="primary" @click='updateUser(user_list)'>确定</el-button>
                 <el-button v-else type="primary" @click='addUser(user_list)'>提交</el-button>
@@ -347,10 +360,14 @@
 /*.parent_ul ul li{
     display: none;
 }*/
+.widClass{
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
 .treeMenu{
     margin:0;
     padding:0;
-    min-height:520px;
+    min-height:850px;
     height:100%;
     overflow: visible;
     float:left;

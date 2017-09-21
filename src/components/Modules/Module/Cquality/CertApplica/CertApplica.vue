@@ -5,7 +5,7 @@
             <el-form :inline="true" :model='search_data' class="demo-form-inline">
                 <el-form-item label="请输入要查找的产品名称">
                     <el-input
-                        v-model='search_data.username'
+                        v-model='search_data.Name'
                         clear></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -57,23 +57,22 @@
             <el-button
             size="small" 
             type="primary"
-            v-if="scope.row.DeclareStatus=='未上报'"
+            v-if="scope.row.DeclareStatus=='未上报' || scope.row.DeclareStatus =='被打回，请完善数据，重新上报'"
             @click="showUpdate(scope.row.ApplyBh)">编辑</el-button>
             <el-button
             size="small" 
             type="info"
             v-else
-            @click="showMore(scope.row.ApplyBh)">查看</el-button>
+            @click="showMore(scope.row)">查看</el-button>
             <el-button
-            v-if="scope.row.DeclareStatus=='未上报'"
+            v-if="scope.row.DeclareStatus=='未上报' || scope.row.DeclareStatus =='被打回，请完善数据，重新上报'"
             size="small" 
             type="warning"
             @click="upData(scope.row.ApplyBh)">上&nbsp;&nbsp;&nbsp;&nbsp;报</el-button>
             <el-button
             size="small" 
             type="warning"
-            v-else
-            @click="showMore(scope.row.ApplyBh)">已上报</el-button>
+            v-else>已上报</el-button>
             <!-- <el-button
             size="small" 
              @click="showMore(scope.row.ApplyBh)">已上报</el-button> -->
@@ -81,7 +80,7 @@
             <el-button
             size="small"
             type="danger"
-            @click="deleteData(scope.row)">删除</el-button>
+            @click="deleteData(scope.row,scope.$index)">删除</el-button>
            
       </template>
     </el-table-column>
@@ -100,9 +99,9 @@
       <el-col :span="24">
         <el-card :body-style="{ padding: '0px' }">
               <header class="infoTop">企业信息</header>
-              <div style="padding: 14px;" class="bottom">
+              <div style="padding:0 14px;" class="bottom">
               <el-form
-                  label-width="100px" 
+                  label-width="120px" 
                   :model="applyData">
               <div class="info1">
                   <el-form-item class='edit-form' 
@@ -170,7 +169,7 @@
               <header class="infoTop">产地信息</header>
               <div style="padding: 14px;" class="bottom">
               <el-form
-                  label-width="100px" 
+                  label-width="120px" 
                   :model="applyData">
               <div class="info1">
                   <el-form-item class='edit-form' 
@@ -201,7 +200,7 @@
                   </el-form-item>
 
                   <el-form-item class='edit-form' 
-                      label="生产基地联系电话：" 
+                      label="产地联系电话：" 
                       prop='Contact'>
                         {{applyData.Contact}}
                   </el-form-item>
@@ -251,9 +250,9 @@
 
         <el-card :body-style="{ padding: '0px' }">
               <header class="infoTop">申报产品情况</header>
-              <div style="padding: 14px;" class="bottom">
+              <div style="padding:0 14px;" class="bottom">
               <el-form
-                  label-width="100px" 
+                  label-width="120px" 
                   :model="applyData">
               <div class="info1">
                   <el-form-item class='edit-form' 
@@ -309,8 +308,8 @@
                    <el-form-item class='edit-form' 
                       :disabled='true'
                       label="产品类别：" 
-                      prop='ApplyOriginType'>
-                         {{applyData.ApplyOriginType}}
+                      prop='commodityType'>
+                         {{applyData.commodityType}}
                   </el-form-item>
 
                   <el-form-item class='edit-form' 
@@ -391,11 +390,15 @@
     width:46%;
     min-width:300px;
 }
-    .edit-form{
-        width:500px;
-    }
-    .block{
-      float:right;
-      margin-right: 20px;
-    }
+.edit-form{
+    width:500px;
+}
+.block{
+  float:right;
+  margin-right: 20px;
+}
+.el-card{
+  background-color: rgb(249, 249, 249);
+  margin-bottom: 10px;
+}
 </style>

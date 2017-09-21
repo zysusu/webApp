@@ -6,16 +6,22 @@ module.exports = {
             pageSize:10,
             searchFlag:false,
             station_list:[],
+            area_list:[],
+            areaList:{
+                value : 'CuitMoon_AreaCode',
+                label : 'CuitMoon_AreaName',
+                children : 'child'
+            },
             batch_id: '', //批量删除时这是多个用逗号隔开的id字符串
             batch_flag: true, //符合批量删除为true,否则为false
-            show_add:false,
+            showAdd:false,
             elements:[],
             station_data:{
             },
             init_station:{
                 WeatherStationID: "",
                 Name: "",
-                BelongTo: "",
+                BelongTo: [],
                 Longitude: "",
                 Latitude: "",
                 Measuringelements: [],
@@ -25,7 +31,6 @@ module.exports = {
             search_data: {
                 Name: ''
             },
-
             //详情弹框信息
             dialog: {
                 show: false,
@@ -80,31 +85,24 @@ module.exports = {
     },
     methods: {
         showDiv(){
-            this.show_add = true; 
             $('.addDiv').show();
-            this.station_data = this.init_station;  
-        },
-        addStation(){
-            this.$router.push('/module/acManage/addExpert');
-             /*this.$router.push({
-                path:'/module/acManage/addExpert',
-                query:{
-                    //id:user.id
-                }
-            });*/
+            this.showAdd = true; 
+            var initStation = {
+                WeatherStationID: "",
+                Name: "",
+                BelongTo: [],
+                Longitude: "",
+                Latitude: "",
+                Measuringelements: [],
+                Remark: ""
+            };
+            this.station_data = initStation;  
         },
         initMap(){
                  // var local = "重庆";
                  // let _this = this;
                  //  var map = new BMap.Map("allmap");            
                  //  map.centerAndZoom(local,12); 
-                 //  map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
-                 //  map.enableContinuousZoom();    //启用地图惯性拖拽，默认禁用         
-                 //  //单击获取点击的经纬度
-                 //  map.addEventListener("click",function(e){
-                 //    _this.station_data.Longitude = e.point.lng;
-                 //    _this.station_data.Latitude = e.point.lat;
-                 //  });
                  var _this = this;
                  var map = new BMap.Map("allmap");
                 var point = new BMap.Point(116.331398,39.897445);
@@ -129,9 +127,11 @@ module.exports = {
                 var _this = this;
                 this.axios.post("/index.php?r=AuthCenter/weather-station-manage/get-all",{pagesize:_this.pageSize,pagenum:1})
                 .then((res) => {  
-                var hh = JSON.parse(res.request.response);    
-                    _this.station_list = hh.data.WeatherStationList;
-                    _this.totalNum = parseInt(hh.data.total);
+                var hh = JSON.parse(res.request.response);   
+                    if(hh.status==200){ 
+                        _this.station_list = hh.data.WeatherStationList;
+                        _this.totalNum = parseInt(hh.data.total);
+                    }
                 });
 
                 this.axios.post('/index.php?r=AuthModel/formulate-modle/view-growth')
@@ -139,15 +139,23 @@ module.exports = {
                      var hh = JSON.parse(res.request.response);
                      _this.elements = hh.data;
                 });
-
+        },
+        getArea(){
+            var _this = this;
+             //获取全部地区
+            this.axios.post("/index.php?r=System/area/get-area",{"CuitMoon_ParentAreaCode": ""})
+            .then((res) => {  
+                var hh = JSON.parse(res.request.response);          
+                _this.area_list = hh.data;
+            });
         },
         handleCurrentChange(val){
             var _this = this;
             this.axios.post('/index.php?r=AuthCenter/weather-station-manage/get-all',{pagesize:_this.pageSize,pagenum:val})
             .then((res)=>{
             var hh = JSON.parse(res.request.response);
-                _this.totalNum = parseInt(hh.data.total);
                 _this.station_list = hh.data.WeatherStationList;
+                _this.totalNum = parseInt(hh.data.total);
             });
         },
         initRouters(){
@@ -188,17 +196,19 @@ module.exports = {
             }
         },
         save_station(data){
+            var _this = this;
             this.axios.post('/index.php?r=AuthCenter/weather-station-manage/add-weather-station',data)
             .then((res)=>{
                  var hh = JSON.parse(res.request.response); 
                  if(hh.status===200){
-                   // _this.show_add = false;
                    this.$message({
                             showClose: true,
                             message  : hh.msg,
                             type     : 'success'
                     });
-                   window.location.reload();
+                    _this.showAdd = false;
+                     $('.addDiv').hide();
+                    _this.getStation();
                  }else{
                     this.$message({
                         showClose: true,
@@ -214,13 +224,15 @@ module.exports = {
             .then((res)=>{
                  var hh = JSON.parse(res.request.response); 
                  if(hh.status===200){
-                     _this.show_add = false;
+                     _this.showAdd = false;
                    this.$message({
                             showClose: true,
                             message  : hh.msg,
                             type     : 'success'
                     });
-                   window.location.reload();
+                 _this.showAdd = false;
+                    $('.addDiv').hide();
+                _this.getStation();
                  }else{
                     this.$message({
                         showClose: true,
@@ -232,12 +244,18 @@ module.exports = {
         },
         onEdit(station){
             this.station_data = station;
-            this.show_add = true;
+            if(!this.station_data.BelongTo){
+                this.station_data.BelongTo = [];
+            };
+            if(!this.station_data.Measuringelements){
+                this.station_data.Measuringelements = [];
+            }
+            this.showAdd = true;
             $('.addDiv').show();
         },
         reBack(){
             $('.addDiv').hide();
-            this.show_add = false;
+            this.showAdd = false;
         },
         onDelete(id,index){
             this.$confirm('你确定删除改气象站吗?', '删除气象站', {
@@ -249,7 +267,7 @@ module.exports = {
             .then((res)=>{
                  var hh = JSON.parse(res.request.response); 
                  if(hh.status===200){
-                    // this.show_add = false;
+                    // this.showAdd = false;
                     // $('.addDiv').hide();
                     this.$message({
                             showClose: true,
@@ -270,16 +288,16 @@ module.exports = {
         /**
          * 点击搜索按钮事件
          */
-         onSearch(val) {
+         onSearch() {
             var name = this.search_data.Name;
             var _this = this;
             this.axios.post('/index.php?r=AuthCenter/weather-station-manage/search-weather-station',{NameOrID:name,pagesize:_this.pageSize,pagenum:1})
             .then((res)=>{
                  var hh = JSON.parse(res.request.response);    
                     if(hh.status==200){
-                        this.totalNum = hh.data.total;
-                        this.station_list = hh.data.WeatherStationList;
-                        this.searchFlag = true;
+                        _this.searchFlag = true;
+                        _this.totalNum = parseInt(hh.data.total);
+                        _this.station_list = hh.data.WeatherStationList;
                     }else{
                          this.$message({
                             showClose: true,
@@ -294,8 +312,8 @@ module.exports = {
             this.axios.post('/index.php?r=AuthCenter/weather-station-manage/search-weather-station',{pagesize:_this.pageSize,pagenum:val})
             .then((res)=>{
                 var hh = JSON.parse(res.request.response);
-                _this.totalNum = hh.data.total;
                 _this.station_list = hh.data.WeatherStationList;
+                _this.totalNum = parseInt(hh.data.total);
         });
 }, 
         /**
@@ -328,14 +346,11 @@ module.exports = {
                 query = Object.assign({}, this.$route.query);
 
             query[field] = value;
-
             this.$router.push({
                 path: path,
                 query: query
             });
         },
-
-
         /**
          * 改变当前页事件
          * @param  {number} page 当前页码
@@ -344,52 +359,12 @@ module.exports = {
             this.setPath('page', page);
         },
 
-
         /**
          * 改变每页显示数量事件
          * @param  {number} size 当前每页显示数量
          */
         onChangePageSize(size) {
             this.setPath('page_size', size);
-        },
-
-
-        /**
-         * 设置状态
-         */
-        onSetStatusUser(user, index, list) {
-            this.$$api_user_updateUserStatus({
-                id: user.id
-            }, (data) => {
-                user.status = user.status == 1 ? 2 : 1;
-            });
-        },
-
-
-        /**
-         * 设置权限
-         */
-        onSetAccess(user,index,list){
-            this.$router.push({
-                path:'/demo/user/access',
-                query:{
-                    id:user.id
-                }
-            });
-
-            // this.dialog_access.userinfo=user;
-            // this.dialog_access.show=true;       
-        },
-
-
-        /**
-         * 删除用户事件
-         * @param  {object || boolean} user  当前用户信息对象或者为布尔值,为布尔值时，代表是批量删除
-         * @param  {number} index 当前用户列表索引
-         * @param  {array} list  当前用户列表数组
-         */
-        onDeleteUser(user, index, list) {
-        
         },
         /**
          * 查看用户信息事件
@@ -415,17 +390,13 @@ module.exports = {
             //this.dialog.user_info = user;
         },
     },
-
     mounted() {
         this.getStation();
         this.initMap();
+        this.getArea();
         this.initRouters();  //请求的函数丶放在它后面
         // var map = new BMap.Map("container");    //创建地图实例，注意在调用此构造函数时应确保容器元素已经添加到地图上
         // var point = new BMap.Point(116.404, 39.915); //创建点坐标， 地图必须经过初始化才可以执行其他操作
-
-        /* setTimeout(() => {
-             this.onSelectUser(this.user_list[0]);
-         }, 600);*/
     },
     watch: {
         '$route' (to, from) {

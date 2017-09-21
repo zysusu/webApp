@@ -1,3 +1,6 @@
+ import {
+    gbs
+ } from 'config/settings.js';
 module.exports = {
     name: 'bussManage',
     data() {
@@ -5,7 +8,7 @@ module.exports = {
             totalNum:0,
             pageSize:10,
             searchFlag:false,
-            BussManager_list: [{
+            BussManager_list: [/*{
                 UserName : '',
                 LoginPassword : '',
                 CampanyName : '',
@@ -24,7 +27,7 @@ module.exports = {
                 Qualification : '',
                 Logo : '',
                 BusinessType : ''
-            }],
+            }*/],
 
             batch_id: '', //批量删除时这是多个用逗号隔开的id字符串
             batch_flag: true, //符合批量删除为true,否则为false
@@ -135,14 +138,6 @@ module.exports = {
             return data.label.indexOf(value) !== -1;
         },
 
-        currentChange(data, node) {
-            // console.log(data, node);
-        },
-
-        nodeClick(data, node, self) {
-            // console.log(node);
-        },
-
         checkChange(data, selfIsChecked, childHasChecked) {
             if (selfIsChecked === true && data.access.split('/').length == 4 && this.checkeds.indexOf(data.access) === -1) {
                 this.checkeds.push(data.access);
@@ -151,46 +146,6 @@ module.exports = {
                 if (index !== -1) {
                     this.checkeds.splice(index, 1);
                 }
-            }
-        },
-
-        setUserAccess() {
-            var flag = false;
-            for (var i = 0; i < this.checkeds.length; i++) {
-                var arr = this.checkeds[i].split('/');
-
-                if (arr.length === 4) {
-                    flag = true;
-                    var rootPath = '/' + arr[1],
-                        twoPath = rootPath + '/' + arr[2];
-
-                    if (this.checkeds.indexOf(rootPath) === -1) {
-                        this.checkeds.push(rootPath);
-                    }
-                    if (this.checkeds.indexOf(twoPath) === -1) {
-                        this.checkeds.push(twoPath);
-                    }
-                }
-            }
-
-            //当前所选中的节点
-            if (flag === false) {
-                this.checkeds = [];
-            }
-
-            // console.log(this.checkeds.join(','));
-            // console.log(this.user_id.join(','));
-
-
-            if (this.business_id.length) {
-                UserApi.setAccessUser.call(this, {
-                    user_id: this.business_id.join(','),
-                    user_accesss: this.checkeds.join(',')
-                }, data => {
-                    this.$message.success('设置成功');
-                });
-            } else {
-                this.$message.error('用户不能为空');
             }
         },
         initRouters(){
@@ -267,7 +222,7 @@ module.exports = {
                             showClose: true,
                             message  : hh.msg,
                             type     : 'error'
-                        });
+                    });
                 }
             });
         },
@@ -280,44 +235,7 @@ module.exports = {
                 _this.BussManager_list = hh.data.businessList;
         });
     },      
-        /**
-         * 表格列表触发CheckBox的事件
-         * @param  {array} val 当前选中的用户信息数组，每个元素是用户信息对象
-         */
-        onSelectionChange(val) {
-            // console.log(val);
-            if (val.length) {
-                this.batch_flag = false;
-                var ids = [];
-                for (var i = 0; i < val.length; i++) {
-                    ids.push(val[i].id);
-                }
-                this.batch_id = ids.join(',');
-            } else {
-                this.batch_flag = true;
-                this.batch_id = '';
-            }
-        },
-
-
-        /**
-         * 改变页码和当前页时需要拼装的路径方法
-         * @param {string} field 参数字段名
-         * @param {string} value 参数字段值
-         */
-        setPath(field, value) {
-            var path = this.$route.path,
-                query = Object.assign({}, this.$route.query);
-
-            query[field] = value;
-
-            this.$router.push({
-                path: path,
-                query: query
-            });
-        },
-
-
+       
         /**
          * 改变当前页事件
          * @param  {number} page 当前页码
@@ -347,23 +265,6 @@ module.exports = {
             });
         },
 
-
-        /**
-         * 设置权限
-         */
-        onSetAccess(user,index,list){
-            this.$router.push({
-                path:'/demo/user/access',
-                query:{
-                    id:user.id
-                }
-            });
-
-            // this.dialog_access.userinfo=user;
-            // this.dialog_access.show=true;
-        },
-
-
         /**
          * 删除用户事件
          * @param  {object || boolean} user  当前用户信息对象或者为布尔值,为布尔值时，代表是批量删除
@@ -372,6 +273,7 @@ module.exports = {
          */
         onDeleteBusiness(bussiness, index, list) {
             var idd = bussiness.CampanyNo;
+            var _this = this;
             this.$confirm('你确定删除 '+bussiness.CampanyName+' 么?', '删除商家', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -386,7 +288,8 @@ module.exports = {
                             message  : hh.msg,
                             type     : 'success'
                         });
-                        window.location.reload();
+                        _this.BussManager_list.splice(index,1);
+                        _this.totalNum = _this.totalNum-1;
                     }else{
                          this.$message({
                             showClose: true,
@@ -415,46 +318,37 @@ module.exports = {
                 });
             }
         },
-
-
         /**
          * 查看用户信息事件
          * @param  {object} bussiness 当前用户信息对象
          */
         onSelectBusiness(bussiness) {
-            this.dialog.show = true;
-            this.dialog.business_info = bussiness;
+            var id = bussiness.CampanyNo;
+             this.axios.post("/index.php?r=AuthCenter/business-manage/get-business",{CampanyNo:id})
+                .then((res) => {  
+                var hh = JSON.parse(res.request.response);    
+                    if(hh.status===200){
+                     this.dialog.show = true;
+                     this.dialog.business_info = hh.data;
+                    }else{
+                         this.$message({
+                            showClose: true,
+                            message  : hh.msg,
+                            type     : 'error'
+                        });
+                    }
+                })
         },
-
-
-        /**
-         * 获取用户信息列表方法
-         */
-        getList() {
-            var data = {};
-
-            var query = this.$route.query;
-            for (var k in query) {
-                if (this.search_data[k] !== undefined) {
-                    this.search_data[k] = query[k];
-                    data[k] = query[k];
-                }
-            }
-
-            this.$$api_business_selectBusiness(data, (data) => {
-                this.BussManager_list = data.list;
-            });
-        }
+       
     },
 
     mounted() {
+        this.imgSrc = gbs.host;
         this.getBuss();
         this.initRouters();
-        this.getList();
     },
     watch: {
         '$route' (to, from) {
-            this.getList();
         }
     }
 }

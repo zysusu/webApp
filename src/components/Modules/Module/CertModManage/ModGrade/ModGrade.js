@@ -113,7 +113,7 @@ module.exports = {
                         type:'success',
                         message:hh.msg
                     });
-                    window.location.reload();
+                   this.dialog3.show = false;
                  }else{
                     this.$message({
                             showClose: true,
@@ -133,7 +133,7 @@ module.exports = {
                         type:'success',
                         message:hh.msg
                     });
-                   // window.location.reload();
+                  // this.dialog1.show = false;
                  }else{
                     this.$message({
                             showClose: true,

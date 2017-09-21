@@ -3,7 +3,7 @@
         <el-col v-if="!showAdd && !lookInfo" :span="24" class='actions-top'>            
             <el-form :inline="true" :model='search_data' class="demo-form-inline">
                 <el-form-item>
-                    <el-input v-model='search_data.Name' clear></el-input>
+                    <el-input v-model='search_data.Name' placeholder="请输入商品名称" clear></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click='onSearch'>查询</el-button>
@@ -11,7 +11,6 @@
                 </el-form-item>
             </el-form>
         </el-col>
-
         <el-table v-if="!showAdd && !lookInfo" border style="width: 100%" align='center'
             :data="apply_list" 
             @selection-change='onSelectionChange'>
@@ -96,7 +95,7 @@
                         size="mini"
                         @click='onShowApply(scope.row)'>查看</el-button>
                         <el-button 
-                        type="success" 
+                        type="warning" 
                         size="mini"
                         v-if="scope.row.OrignStatus=='未上报'"
                         @click='upApply(scope.row)'>上&nbsp;&nbsp;&nbsp;&nbsp;报</el-button>
@@ -107,22 +106,24 @@
                 </template>
             </el-table-column>
         </el-table>
-    <div class="block" v-show="!showAdd && !lookInfo && !searchFlag" style="margin:20px 35px; float:right;">
+    <div class="block" style="margin:20px 35px; float:right;">
       <el-pagination
+        v-if="!showAdd && !lookInfo && !searchFlag" 
         layout="total,prev, pager, next"
         :page-size="pageSize"
         :total="totalNum"
-         @current-change="handleCurrentChange">
+        @current-change="handleCurrentChange">
       </el-pagination>
-     </div> <!--  分页的div -->
-     <div class="block" v-show="!showAdd && !lookInfo &&searchFlag" style="margin:20px 35px; float:right;">
+    </div> <!--  分页的div -->
+    <div class="block" style="margin:20px 35px; float:right;">
       <el-pagination
+        v-if="!showAdd && !lookInfo && searchFlag" 
         layout="total,prev, pager, next"
         :page-size="pageSize"
         :total="totalNum"
-         @current-change="handleCurrentChange2">
+        @current-change="handleCurrentChange2">
       </el-pagination>
-     </div> <!--  分页的div -->
+    </div> <!--  分页的div -->
         <!-- <el-col :span="24" class='btm-action'>
             <el-pagination
                 v-if='paginations.total>0'
@@ -148,24 +149,24 @@
             :rules="add_rules"
             ref='productInfo'>
         <div class="info1">
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 :disabled='true'
-                label="单位名称" 
+                label="单位名称：" 
                 prop='ApplyCompany'>
                 <el-input
                         v-model="productInfo.ApplyCompany"></el-input>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
-                label="产品名称" 
+            <el-form-item class='myClass' 
+                label="产品名称：" 
                 prop='OriginName'>
                 <el-input 
                     v-model="productInfo.OriginName" 
                     placeholder=''></el-input>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
-                label="生产基地" 
+            <el-form-item class='myClass' 
+                label="生产基地：" 
                 prop='OriginAddress'>
                  <el-cascader
                     :props="areaList"
@@ -176,7 +177,7 @@
                 </el-cascader>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 label="产品产值" 
                 prop='ProductValue'>
                 <el-input 
@@ -184,7 +185,7 @@
                     placeholder=''></el-input>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 label="手机号码" 
                 prop='Constract'>
                 <el-input 
@@ -200,7 +201,7 @@
             </el-form-item>
         </div>
         <div class="info2">
-             <el-form-item class='edit-form' 
+             <el-form-item class='myClass' 
                 :disabled='true'
                 label="申请人" 
                 prop='ApplyPerson'>
@@ -208,7 +209,7 @@
                         v-model="productInfo.ApplyPerson"></el-input>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 label="产品品牌" 
                 prop='ProductBrand'>
                 <el-input 
@@ -216,7 +217,7 @@
                     placeholder=''></el-input>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 label="地址" 
                 prop='PersonAdress'>
                 <el-input 
@@ -224,14 +225,14 @@
                     placeholder=''></el-input>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 label="产品产量" 
                 prop='ProductNum'>
                 <el-input 
                     v-model="productInfo.ProductNum" 
                     placeholder=''></el-input>
             </el-form-item>
-               <el-form-item class='edit-form' 
+               <el-form-item class='myClass' 
                 label="申请标签数量" 
                 prop='LabelNum'>
                 <el-input 
@@ -246,7 +247,84 @@
         <el-card :body-style="{ padding: '0px' }">
             <header class="infoTop">已获得的资质，认证，荣誉，注册商标</header>
             <div style="padding: 14px;" class="bottom">
-          <el-form
+                 <el-table
+              :data="tableData"
+              text-align="center"
+              border
+              stripe
+              style="min-width: 100%">
+              <el-table-column
+                label="证书图片"
+                min-width="20%">
+                <template scope="scope">
+                    <img v-if="scope.row.picUrl" :src="imageSrc+scope.row.picUrl" class="avatar">
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Name"
+                label="证书名称"
+                min-width="20%">
+              </el-table-column>
+              <el-table-column
+                prop="publishUnit"
+                label="颁发机构"
+                min-width="20%">
+              </el-table-column>
+              <el-table-column
+                prop="awardTime"
+                label="获得时间"
+                min-width="20%">
+              </el-table-column>
+
+              <el-table-column
+                prop=""
+                min-width="20%"
+                label="操作">
+                <template scope="scope">
+                      <el-button
+                      size="small"
+                      type="danger"
+                      @click="deleteCertificate(scope.$index,tableData)">删除证书</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <br>
+            <el-form label-width="100px" :model="Businessqualification" style="width:100%;">
+                <div class="info1">
+                  <el-form-item style="text-align:left;" label="上传证书：">
+                    <el-upload
+                      class="avatar-uploader"
+                      :action="imgAction"
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess1"
+                      :before-upload="beforeAvatarUpload">
+                      <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                  </el-form-item>
+                </div>
+                <div class="info2">
+                    <el-form-item style="text-align:left;" label="颁发时间：">
+                        <el-date-picker
+                        v-model="Businessqualification.awardTime"
+                        type="date"
+                        placeholder="颁发时间">
+                      </el-date-picker>
+                    </el-form-item>
+                  <el-form-item label="证书名称：">
+                    <el-input v-model="Businessqualification.Name"></el-input>
+                  </el-form-item>
+
+                  <el-form-item label="颁发部门：">
+                    <el-input v-model="Businessqualification.publishUnit"></el-input>
+                  </el-form-item>
+                </div>
+                </el-form>
+                <span class="centerInfo">
+                <el-button type="primary" style="width:140px;" @click="addCertificate">保存证书</el-button>
+                </span>
+                
+         <!--  <el-form
             label-width="100px" 
             :model="credenInfo"
             :rules="add_rules"
@@ -265,9 +343,8 @@
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
-     <!--    </div>
-        <div class="info2"> -->
-            <el-form-item class='edit-form' 
+    
+            <el-form-item class='myClass' 
                 :disabled='true'
                 label="证书名称" 
                 prop='CertificateName'>
@@ -275,14 +352,13 @@
                         v-model="credenInfo.CertificateName"></el-input>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 label="颁发部门" 
                 prop='AwardDepart'>
                 <el-input 
                     v-model="credenInfo.AwardDepart" 
                     placeholder=''></el-input>
             </el-form-item>
-
             <el-form-item
                 label="颁发时间" 
                 prop='GetTime'>
@@ -295,13 +371,18 @@
                  </el-date-picker>
                 </template>
             </el-form-item>
-        <!-- </div> -->
+        
             <el-form-item style="width:100%; margin:20px auto;">
                     <el-button type="primary" @click='save_info(productInfo,credenInfo)'>提交</el-button>
                     <el-button type="default"
                                @click='reBack()'>返回</el-button>
             </el-form-item>
-            </el-form>
+            </el-form> -->
+        </div>
+         <div style="width:100%; text-align: center; float:left; margin:10px auto; margin-bottom: 30px;">
+                    <el-button type="success" @click='save_info(productInfo)'>提交</el-button>
+                    <el-button type="default"
+                               @click='reBack()'>返回</el-button>
         </div>
         </el-card>
       </el-col>
@@ -317,71 +398,81 @@
             :rules="add_rules"
             ref='showDuctInfo'>
         <div class="info1">
-            <el-form-item class='edit-form' 
+            <el-form-item
+                class="letHeight"
                 :disabled='true'
                 label="单位名称：" 
                 prop='ApplyCompany'>
                {{ showDuctInfo.ApplyCompany}}
             </el-form-item>
-
-            <el-form-item class='edit-form' 
+            <el-form-item 
+              class="letHeight"
                 label="产品名称：" 
                 prop='OriginName'>
-                {{ showDuctInfo.ApplyCompany}}
+                {{ showDuctInfo.OriginName}}
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item 
+               class="letHeight"
                 label="生产基地：" 
                 prop='OriginAddress'>
                 {{ showDuctInfo.OriginAddress}}
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item 
+             class="letHeight"
                 label="产品产值：" 
                 prop='ProductValue'>
-                {{ showDuctInfo.ApplyCompany}}
+                {{ showDuctInfo.ProductValue}}
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item 
+             class="letHeight"
                 label="手机号码：" 
                 prop='Constract'>
-                {{ showDuctInfo.ApplyCompany}}
+                {{ showDuctInfo.Constract}}
             </el-form-item>
-            <el-form-item class="edit-form" 
+            <el-form-item 
+             class="letHeight"
                 label='产品描述：'
-                prop='CuitMoon_ModuleStatus'>
-                {{ showDuctInfo.ApplyCompany}}
+                prop='OriginDescription'>
+                {{ showDuctInfo.OriginDescription}}
             </el-form-item>
         </div>
         <div class="info2">
-             <el-form-item class='edit-form' 
+             <el-form-item 
+              class="letHeight"
                 :disabled='true'
                 label="申请人：" 
-                prop='CuitMoon_ModuleName'>
-                {{ showDuctInfo.ApplyCompany}}
+                prop='ApplyPerson'>
+                {{ showDuctInfo.ApplyPerson}}
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item 
+             class="letHeight"
                 label="产品品牌：" 
                 prop='ProductBrand'>
-                {{ showDuctInfo.ApplyCompany}}
+                {{ showDuctInfo.ProductBrand}}
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item
+             class="letHeight"
                 label="地址：" 
                 prop='PersonAdress'>
-                {{ showDuctInfo.ApplyCompany}}
+                {{ showDuctInfo.PersonAdress}}
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item
+             class="letHeight"
                 label="产品产量：" 
-                prop='ProductValue'>
-                {{ showDuctInfo.ApplyCompany}}
+                prop='ProductNum'>
+                {{ showDuctInfo.ProductNum}}
             </el-form-item>
-               <el-form-item class='edit-form' 
+               <el-form-item
+                class="letHeight"
                 label="申请标签数量：" 
                 prop='LabelNum'>
-                {{ showDuctInfo.ApplyCompany}}
+                {{ showDuctInfo.LabelNum}}
             </el-form-item>
         </div>
         </el-form>
@@ -441,12 +532,21 @@
 }
 .infoTop{
     height:40px;
-    background-color: #96CB33;
+    background-color:#96CB33;
     color:#fff;
     font-weight: bold;
     letter-spacing: 2px;
     font-size: 18px;
     padding:10px 14px;
+}
+.myClass{
+    margin:0px;
+    margin-bottom: 16px;
+    max-width: 550px;
+}
+.letHeight{
+    margin:0px;
+    padding:0px;
 }
     .demo-form-inline{
         display: inline-block;
@@ -462,11 +562,14 @@
     .pagination{
         display: inline-block;
     }
-       .btn{
-      width:100%;
-      background: transparent;
-      border:none;
-      margin:25px auto;
-      text-align: center;
-    }
+.btn{
+  width:100%;
+  background: transparent;
+  border:none;
+  margin:25px auto;
+  text-align: center;
+}
+.el-card{
+  margin-bottom: 10px;
+}
 </style>

@@ -19,6 +19,7 @@ module.exports = {
             pagesizeLY:10,
             totalLY:0,
             active:1,
+            sjFlag:true,
             LYdata:[],
             LabelApplicationData:[],
             // Labelapplication: {
@@ -74,6 +75,7 @@ module.exports = {
             var hh = JSON.parse(res.request.response);
             if(hh.status===200){
                 this.applyType = hh.data;
+                this.type = hh.data[0].CuitMoon_DictionaryCode;
             }else if(hh.status==404){
             	this.$message({
             		showClose: true,
@@ -94,7 +96,11 @@ module.exports = {
                 this.productsData = hh.data.labels;
                 this.resType = hh.data.type;
                 this.pagesize = hh.data.pagesize;
-                this.total = hh.data.total;
+                if(hh.data.total){
+                    this.total = parseInt(hh.data.total);
+                }else{
+                    this.total = 0;
+                };
                 this.Labelapplication.applyType = hh.data.type;
             }else if(hh.status==404){
             	this.$message({
@@ -198,7 +204,6 @@ module.exports = {
                 this.active = 4;
                 this.pagesizeRecord = hh.data.pagesize;
                 this.totalRecord = hh.data.total;
-
                 this.recordData = hh.data.label;
             }else if(hh.status==404){
             	this.$message({
@@ -213,8 +218,9 @@ module.exports = {
             this.axios.post("/index.php?r=Label/labelmanage/delete-labelapplication",{LabelApplicationId:row[index].LabelApplicationId})
             .then((res) => {
             var hh = JSON.parse(res.request.response);
-            if(hh.status===200){
+            if(hh.status==200){
                 row.splice(index, 1);
+                this.totalLabel -=1;
                 this.$message({
             		showClose: true,
             		message  : hh.msg,
@@ -291,7 +297,6 @@ module.exports = {
             });
         },
         updateLY(index,row){
-
             // Labelproviderecord
             this.axios.post("/index.php?r=Label/labelmanage/get-record-by-id",{ReceiveId:row[index].ReceiveId})
             .then((res) => {
@@ -419,6 +424,19 @@ module.exports = {
             }
             });
         },
+         getRole(){
+            var _this = this;
+            this.axios.post('/index.php?r=System/role/get-my-role')
+            .then((res)=>{
+                var hh = JSON.parse(res.request.response);
+                var len = hh.data.roles.length;
+                for(var i=0;i<len;i++){
+                    if("商家"==hh.data.roles[i]){
+                        _this.sjFlag = false;
+                    }
+                }
+            });
+        },
         initRouters(){
             var routes = this.$router.options.routes;
             for (var i = 0; i < routes.length; i++) {
@@ -462,6 +480,7 @@ module.exports = {
 		this.FrontURL = gbs.host;
         this.imageAction = gbs.host+"/index.php?r=common/upload";
         this.getTypes();
+        this.getRole();
         this.initRouters();
 	},
 	watch: {

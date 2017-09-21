@@ -1,7 +1,7 @@
 <template>
     <div class="form">
         <el-col :span="4" class="treeMenu">
-        <span style="font-weight: bold; color:red;">模型类别</span>
+        <span style="font-weight: bold; color:red; margin-left: 10px;">模型类别</span>
         <el-tree
           class="leftTree"
           :data="product_type"
@@ -10,6 +10,7 @@
           @node-click="handleNodeClick">
         </el-tree>
         </el-col>
+    <div class="wrap">
         <div id="mainText">
         <el-col v-show="!addChild && !showEdit" :span="24" class='actions-top'>
             <el-form :inline="true" :model='search_data' class="demo-form-inline">
@@ -149,7 +150,7 @@
              <!--  添加的div结束 -->
 
              <!--  编辑的div -->
-        <el-form class="bigForm" v-show="showEdit" style="margin:20px;width:60%;min-width:600px;" 
+        <el-form class="bigForm" v-if="showEdit" style="margin:20px;width:60%;min-width:600px;" 
             label-width="100px" 
             :model="editData"
             ref='editData'>
@@ -171,7 +172,7 @@
                 </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item class='edit-form' 
+        <el-form-item class='edit-form' 
                 label="所属产品" 
                 prop='ProductNumber'>
                   <el-select v-model="editData.ProductNumber" placeholder="请选择">
@@ -181,8 +182,7 @@
                   :value="item.ProductNumber">
                 </el-option>
                   </el-select>
-            </el-form-item>
-
+        </el-form-item>
         <el-form-item
                 label='生育期'
                 prop='growth'><i @click="cloneUpDiv" class="el-icon-plus add" style="color:#26b2d8; cursor:pointer;"></i>  
@@ -192,7 +192,7 @@
                 <table class="bearTable">
                     <tr>
                         <th><span>名称</span></th>
-                        <th><input class="gname" type="text" :value="item.growthName"/><span class="GnameId" v-show="false">{{item.growthId}}</span></th>
+                        <th><input class="gname" type="text" v-model="item.growthName" :value="item.growthName"/><span class="GnameId" v-show="false">{{item.growthId}}</span></th>
                     </tr>
                     <tr v-for="ele in elements">    
                       <td><input name="element" type="checkbox" :checked="choose(index,ele.ElementNumber)" :value='ele.ElementNumber'/>{{ele.ElementName}}</td>
@@ -218,9 +218,9 @@
             </el-form-item>
         </el-form> <!--  编辑的div结束 -->
     </div>  <!-- "mainText" -->
+</div>
     </div>
 </template>
-
 <script>
 	import SetModuleJs from './SetModule.js';
 	module.exports = SetModuleJs;
@@ -247,11 +247,12 @@ input[name="element"]{
     /*border:1px solid red;*/
 }
 .addBear,.updateBear{
-   /* width: 460px;*/
+    width: 460px;
+    display: block;
     min-height: 280px;
+    height:auto;
     border:1px solid #e0e0e0;
     padding: 5px;
-    height:auto;
     margin-bottom: 10px;
     border-radius: 5px;
     background-color: #e6efef;
@@ -288,6 +289,13 @@ input[name="element"]{
     border:1px solid #e1e1e1;
 
 }
+.leftTree{
+  margin-left:-10px;
+  margin-right: 10px;
+}
+.el-tree{
+  border:2px solid #d1dbe5;
+}
 .treeMenu{
     margin:0;
     padding:0;
@@ -295,7 +303,7 @@ input[name="element"]{
     height:100%;
     overflow: visible;
     float:left;
-    border-right:3px solid #324157;
+    /*border-right:3px solid #324157;*/
 }
 .tree{
     border:none;
@@ -316,33 +324,37 @@ input[name="element"]{
 .badge:hover{
     background-color: transparent;
 }
+.wrap{
+    float:left;
+    width:83%;
+    min-height: 550px;
+    height:auto;
+    border-left:3px solid #324157;
+}
 #mainText{
-        width:82%;
+        width:99%;
+        margin-left: 10px;
         float: right;
         border:1px solid #f1f1f1;
         padding:5px;
         min-height: 100%;
         height:auto;
 }
-    .demo-form-inline {
-        display: inline-block;
-        float: right;
-    }
+.demo-form-inline {
+    display: inline-block;
+    float: right;
+}
 
-    .btm-action {
-        margin-top: 20px;
-        text-align: center;
-    }
-
+.btm-action {
+    margin-top: 20px;
+    text-align: center;
+}
     .actions-top {
         height: 46px;
     }
 
     .pagination {
         display: inline-block;
-    }
-    .el-dialog__body{
-
     }
 input[type="text"], input[type="password"]{
     width:220px !important;

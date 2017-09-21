@@ -1,10 +1,10 @@
 var env = process.env;
-
 var settings = {
 	//全局设置
 	gbs: {
-		//host: 'http://exam.cuit.edu.cn:9999/WebApp/basic/web',
-		host: '/slsAdminApi', //接口根地址。本地代理到slsadmin.api.sls.com,线上使用的是Nginx代理
+		//host:'http://210.41.228.124:9999/WebApp/basic/web',
+		host: 'http://exam.cuit.edu.cn:9999/WebApp/basic/web',
+		//host: '/slsAdminApi', //接口根地址。本地代理到slsadmin.api.sls.com,线上使用的是Nginx代理
 		db_prefix: 'sls_admin_', //本地存储的key
 	},
 	//回调
@@ -14,6 +14,7 @@ var settings = {
 		 * @param  {object} err 返回的对象，包含错误码和错误信息
 		 */
 		statusError(err) {
+			// alert(1);
 			if (err.status !== 404) {
 				this.$message({
 					showClose: true,
@@ -31,7 +32,6 @@ var settings = {
 				});
 			}
 		},
-
 		/**
 		 * ajax请求网络出错时调用
 		 */
@@ -42,8 +42,18 @@ var settings = {
 				type: 'error'
 			});
 		}*/
+		requestError(err){
+			// alert(2);
+			if(err.response.data.status==401){
+				this.$message({
+				showClose: true,
+				message: '登录已过期，请重新登录！',
+				type: 'error'
+			});
+			this.$router.push("/login");
+		  }
+		}
 	}
 };
-
 
 module.exports = settings;

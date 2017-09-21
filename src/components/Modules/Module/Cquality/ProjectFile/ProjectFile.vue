@@ -832,7 +832,7 @@
   width:500px;
   height: 20px;
 }
- .btn{
+.btn{
       width:100%;
       height: 40px;
       float: left;
@@ -841,5 +841,9 @@
       margin:100px auto;
       margin-bottom: 35px;
       text-align: center;
-    }
+}
+.btn:hover{
+   background: transparent;
+  border:none;
+}
 </style>

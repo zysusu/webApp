@@ -4,8 +4,9 @@
             <el-form :inline="true" :model='search_data' class="demo-form-inline">
                 <el-form-item>
                     <el-input
-                              v-model='search_data.Name'
-                              clear></el-input>
+                          placeholder="要素名称"
+                          v-model='search_data.Name'
+                          clear></el-input>
                 </el-form-item>
             
                 <el-form-item>
@@ -57,12 +58,11 @@
                             icon='view'
                             size="mini"
                             @click='showInfo(scope.row)'>查看</el-button>
-                   
                 </template>
             </el-table-column>
 
             <el-table-column
-                    label="删除"
+                    label="操作"
                     align="center"
                     :context="_self">
                 <template scope='scope'>
@@ -71,12 +71,12 @@
                             type="info"
                             icon='edit'
                             size="mini"
-                            @click='showUpdate(scope.row)'></el-button>
+                            @click='showUpdate(scope.row)'>编辑</el-button>
                     <el-button
                             type="danger"
                             icon='delete'
                             size="mini"
-                            @click='onDelete(scope.row)'></el-button>
+                            @click='onDelete(scope.row,scope.$index)'></el-button>
 
                 </template>
             </el-table-column>
@@ -94,9 +94,9 @@
 
             <el-form-item
                         label="要素类型"
-                        prop="TyepName">
+                        prop="ElementType">
                 <el-select 
-                       v-model="dialog1.element_data.TyepName">
+                       v-model="dialog1.element_data.ElementType">
                     <el-option
                         v-for="item in options"
                         :key="item.value"
@@ -129,7 +129,8 @@
 
             </el-form>
             <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="addElement(dialog1.element_data)">提交</el-button>
+             <el-button type="primary" v-if="dialog1.element_data.ElementNumber"  @click="updateElement(dialog1.element_data)">确定</el-button>
+            <el-button type="primary" v-if="!dialog1.element_data.ElementNumber"  @click="addElement(dialog1.element_data)">提交</el-button>
                 <el-button @click="dialog1.show = false">取 消</el-button>
                 
             </span>
@@ -162,7 +163,7 @@
                               {{dialog2.element_info.TyepName}}
                 </el-form-item>
 
-                    <el-form-item class='edit-form'
+                  <el-form-item class='edit-form'
                               label="添加时间："
                               prop='AddTime'>
                               {{dialog2.element_info.AddTime}}

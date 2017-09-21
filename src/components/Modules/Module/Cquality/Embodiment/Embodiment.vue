@@ -55,10 +55,12 @@
             v-if="scope.row.DeclareStatus=='待建立实施方案'"
             size="small">待建</el-button>
             <el-button
+            type="warning"
             v-if="scope.row.DeclareStatus=='待基层专家组审核'"
             @click="checkProject(scope.row)"
             size="small">审核</el-button>
-             <el-button
+            <el-button
+            type="warning"
             v-if="scope.row.DeclareStatus=='待省级专家组审核'"
             @click="checkProject(scope.row)"
             size="small">审核</el-button>
@@ -81,10 +83,11 @@
             <el-button
             v-if="scope.row.DeclareStatus=='待建立实施方案'"
             size="small"
+            type="info"
             @click="addProject(scope.row)">新建</el-button>
             <el-button
             size="small"
-            type="success"
+            type="primary"
             @click="showAll(scope.row)">查看</el-button>
       </template>
     </el-table-column>
@@ -102,44 +105,42 @@
                 :data="productInfo"
                 :model="productInfo">
             <div class="info1">
-                <el-form-item class='edit-form' 
-                    :disabled='true'
-                    label="认证项目编号：" 
-                    prop='ApplyBh'>
-                 {{productInfo.ApplyBh}}
-                </el-form-item>
-
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     label="产品名称：" 
                     prop='ProductName'>
                        {{productInfo.ProductName}}
                 </el-form-item>
+                <el-form-item class='myClass' 
+                label="产品品牌：" 
+                prop='ProductBrand'>
+                  {{productInfo.ProductBrand}}
+            </el-form-item>
 
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     label="所属商家：" 
                     prop='unityName'>
                       {{productInfo.unityName}}
                 </el-form-item>
         </div>
         <div class="info2">
-             <el-form-item class='edit-form' 
+            <!--  <el-form-item class='myClass' 
+                    :disabled='true'
+                    label="认证项目编号：" 
+                    prop='ApplyBh'>
+                 {{productInfo.ApplyBh}}
+                </el-form-item> -->
+             <el-form-item class='myClass' 
                 :disabled='true'
                 label="认证申请时间：" 
                 prop='ApplyTime'>
                    {{productInfo.ApplyTime}}
             </el-form-item>
-
-            <el-form-item class='edit-form' 
-                label="产品品牌：" 
-                prop='ProductBrand'>
-                  {{productInfo.ProductBrand}}
-            </el-form-item>
-
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 label="产地：" 
                 prop='Address'>
                  {{productInfo.Address}}
             </el-form-item>
+
         </div>
         </el-form>
       </el-card>
@@ -150,17 +151,17 @@
             <div class="eleDivs" v-for="(item,i) in elementInfo">
             <el-form 
                 style="padding:8px 15px;"
-                label-width="110px" 
+                label-width="145px" 
                 :model="item">
             <div class="info1">
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     :disabled='true'
                     label="气象站：" 
                     prop='stationId'>
                  {{item.stationId}}
                 </el-form-item>
 
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     label="气象指标：" 
                     prop='meteIndicators'>
                      <span v-for="list in item.meteIndicators">
@@ -168,21 +169,21 @@
                      </span>
                 </el-form-item>
 
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     label="农作物生育期：" 
                     prop='cropGrowthPeriod'>
                       {{item.cropGrowthPeriod}}
                 </el-form-item>
         </div>
         <div class="info2">
-             <el-form-item class='edit-form' 
+             <el-form-item class='myClass' 
                 :disabled='true'
                 label="理由：" 
                 prop='meteIndicatorsReason'>
                    {{item.meteIndicatorsReason}}
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 label="数据采集时间：" >
                   {{item.startCollectionTime}}&nbsp;&nbsp;~&nbsp;&nbsp;{{item.endCollectionTime}}
             </el-form-item>
@@ -199,21 +200,21 @@
                 label-width="140px" 
                 :model="localInfo">
             <div class="info1">
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     :disabled='true'
                     label="产地概况：" 
                     prop='Origin_Situation'>
                  {{localInfo.Origin_Situation}}
                 </el-form-item>
 
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     label="产地主要气象灾害：" 
                     prop='Meteorological_Disaster'>
                        {{localInfo.Meteorological_Disaster}}
                 </el-form-item>
             </div>
             <div class="info2">
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     label="农产品主要病虫害：" 
                     prop='Diseases_InsectPests'>
                       {{localInfo.Diseases_InsectPests}}
@@ -228,10 +229,10 @@
               <header class="infoTop">基层专家意见</header>
             <el-form 
                 style="padding:8px 15px;"
-                label-width="145px" 
+                label-width="125px" 
                 :model="localInfo">
             <div class="info1">
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     :disabled='true'
                     label="组长签名：" 
                     prop='BasicPanel_Sign'>
@@ -239,7 +240,7 @@
                 </el-form-item>
             </div>
             <div class="info2">
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     label="基层专家组意见：" 
                     prop='BasicPanel_AuditOpinion'>
                        {{localInfo.BasicPanel_AuditOpinion}}
@@ -257,7 +258,7 @@
                 label-width="125px" 
                 :model="localInfo">
             <div class="info1">
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     :disabled='true'
                     label="组长签名：" 
                     prop='ProvincialPanel_Sign'>
@@ -265,7 +266,7 @@
                 </el-form-item>
             </div>
             <div class="info2">
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     label="省级专家组意见：" 
                     prop='ProvincialPanel_AuditOpinion'>
                        {{localInfo.ProvincialPanel_AuditOpinion}}
@@ -288,7 +289,7 @@
                 label-width="125px" 
                 :model="expertView">
             <div class="info1">
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                 label="组长签名：" 
                 prop='cropGrowthPeriod'>
                     <el-input 
@@ -297,21 +298,21 @@
             </el-form-item>
             </div>
             <div class="info2">
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                 label="基层专家意见：" 
                 v-if="checkFlag==1"
                 prop='cropGrowthPeriod'>
                     <el-input 
                     v-model="expertView.opinion"></el-input>
                 </el-form-item>
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                 v-if="checkFlag==2"
                 label="省级专家意见：" 
                 prop='cropGrowthPeriod'>
                     <el-input 
                     v-model="expertView.opinion"></el-input>
                </el-form-item>
-               <el-form-item class='edit-form' 
+               <el-form-item class='myClass' 
                 v-if="checkFlag==3"
                 label="省级专家意见：" 
                 prop='cropGrowthPeriod'>
@@ -326,33 +327,33 @@
       <!-- 审核的省级专家意见结束 -->
 
         <!-- 新建方案 -->
-      <div class="box-card" v-if="showAdd" :body-style="{ padding: '0px' }">
+        <el-card v-if="showAdd" :body-style="{ padding: '0px' }">
             <header class="infoTop">添加方案信息</header>
                <!--  动态生成生育期 -->
             <el-card v-for="(item,num) in total_bear" class="newChild" style="margin:15px 20px; border:1px solid #96CB33;" :body-style="{ padding: '0px' }">              
             <el-form
                 label-width="125px">
             <div class="info1">
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     :disabled='true'
                     label="气象站：">
                  {{item.stationId}}
                 </el-form-item>
 
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     label="气象指标：" >
                   <span v-for="list in item.meteIndicators">{{list}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
                       
                 </el-form-item>
 
-                <el-form-item class='edit-form' 
+                <el-form-item class='myClass' 
                     label="农作物生育期：" 
                     prop='cropGrowthPeriod'>
                       {{item.cropGrowthPeriod}}
                 </el-form-item>
         </div>
         <div class="info2">
-             <el-form-item class='edit-form'
+             <el-form-item class='myClass'
                 format="yyyy-MM-dd"
                 type="datetime" 
                 :disabled='true'
@@ -360,7 +361,7 @@
                  {{item.startCollectionTime}}&nbsp;&nbsp;~&nbsp;&nbsp;{{item.endCollectionTime}}
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 label="理由：" 
                 prop='meteIndicatorsReason'>
                   {{item.meteIndicatorsReason}}
@@ -374,14 +375,14 @@
 
       <div style="padding: 14px;" class="bottom">
         <el-form
-            label-width="100px" 
+            label-width="120px" 
             :model="bearing"
             :rules="bear_rules"
             ref='bearing'>
         <div class="info1">
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 :disabled='true'
-                label="气象站" 
+                label="气象站：" 
                 prop='stationId'>
                 <el-select v-model="bearing.stationId">
                     <el-option
@@ -393,7 +394,7 @@
                 </el-select>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item class='myClass' 
                 label="气象指标：" 
                 prop='meteIndicators'>
                 <template>
@@ -403,8 +404,8 @@
               </template>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
-                label="农作物生育期" 
+            <el-form-item class='myClass' 
+                label="农作物生育期：" 
                 prop='cropGrowthPeriod'>
              <el-input 
                     v-model="bearing.cropGrowthPeriod" 
@@ -423,8 +424,8 @@
           </el-form-item>
         </div>
         <div class="info2">
-            <el-form-item class='edit-form' 
-                label="数据采集时间">
+            <el-form-item class='myClass' 
+                label="数据采集时间：">
                 <el-date-picker
                 v-model="bearing.startCollectionTime"
                 type="date"
@@ -444,7 +445,7 @@
         </el-form>
 
         <el-form
-            label-width="100px" 
+            label-width="120px" 
             :model="projectInfo"
             :rules="project_rules"
             ref='projectInfo'>
@@ -458,7 +459,7 @@
                     v-model="projectInfo.Origin_Situation" 
                     placeholder=''></el-input>
           </el-form-item>
-           <el-form-item style="text-align:left;" class='edit-form' 
+           <el-form-item style="text-align:left;" class='myClass' 
                 :disabled='true'
                 label="申请频率：" 
                 prop='ApplyFrequency'>
@@ -500,8 +501,7 @@
         </div>
         </el-form>     
         </div>
-    </div>
-
+    </el-card>
 
       </el-col>
     </el-row>
@@ -526,11 +526,13 @@ label{
   font-weight: bold;
 }
 .eleDivs{
-  width:96%;
+  width:97%;
   margin:15px auto;
   height:auto;
   overflow-y: auto;
-  border:1px solid #c1c1c1;
+  border-radius: 5px;
+  box-shadow: 0px 0px 2px 3px #e3e3e3;
+  background-color: #fff;
 }
 .info1,.info2{
     float:left;
@@ -569,9 +571,13 @@ label{
   height:auto;
   overflow:visible;
 }
-    .edit-form{
-        width:500px;
-        height:20px;
+.el-card{
+  background-color: rgb(249, 249, 249);
+  margin-bottom: 10px;
+}
+    .myClass{
+     /* margin:20px;*/
+      
     }
     .btn{
       width:100%;
@@ -581,4 +587,10 @@ label{
       margin-bottom: 35px;
       text-align: center;
     }
+.el-form-item{
+  margin-bottom: 0px;
+}
+.el-textarea{
+  max-width: 500px;
+}
 </style>

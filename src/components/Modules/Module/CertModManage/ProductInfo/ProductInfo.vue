@@ -1,7 +1,7 @@
 <template>
     <div class="modManage">
         <el-col :span="4" class="treeMenu">
-        <span style="font-weight: bold; color:red;margin-left: 25px;">产品类别</span>
+        <span style="font-weight: bold; color:red;margin-left: 10px;">产品类别</span>
         <el-tree
           class="leftTree"
           :data="productType"
@@ -10,7 +10,7 @@
           @node-click="handleNodeClick">
         </el-tree>
 
-        <!-- <div class="tree">
+       <!-- <div class="tree">
             <ul>
                <li class="parent_li" @click="initLeftTree()">
                     <span class="badge"><i class="icon-plus-sign"></i><a style="color:red; text-shadow: none;">产品类别</a></span>
@@ -21,7 +21,7 @@
                     </ul>
                 </li>
             </ul>
-        </div>  --><!-- tree -->
+        </div> --> <!-- tree -->
         </el-col>
 
         <div id="mainText">
@@ -29,8 +29,8 @@
             <el-form :inline="true" :model='search_data' class="demo-form-inline">
                 <el-form-item>
                     <el-input
-                              v-model='search_data.Name'
-                              clear></el-input>
+                          v-model='search_data.Name'
+                          clear></el-input>
                 </el-form-item>
             
                 <el-form-item>
@@ -90,11 +90,11 @@
                             type="danger"
                             icon='delete'
                             size="mini"
-                            @click='onDelete(scope.row)'></el-button>
+                            @click='onDelete(scope.row,scope.$index)'></el-button>
                 </template>
             </el-table-column>
         </el-table>
-<div class="block" v-show="showList" style="margin:20px 35px; float:right;">
+<div class="block" v-show="showList && pageFlag" style="margin:20px 35px; float:right;">
      <el-pagination
         layout="total,prev, pager, next"
         :page-size="pageSize"
@@ -103,14 +103,14 @@
       </el-pagination>
 </div> <!--  分页的div -->
 
-
-        <el-form v-if="addChild" style="margin:20px;width:60%;min-width:600px;" 
+    <div class="addDiv" v-if="addChild" style="width: 90%; margin:10px auto; min-height: 480px; height:auto; border:1px solid #e1e1e1">
+        <el-form style="margin:20px;width:60%;min-width:600px;" 
             label-width="100px" 
             :model="product_data"
             :rules="product_rules"
             ref='product_data'>
 
-            <el-form-item class='edit-form' 
+            <el-form-item
                 :disabled='true'
                 label="产品名称" 
                 prop='ProductName'>
@@ -118,7 +118,7 @@
                         v-model="product_data.ProductName"></el-input>
             </el-form-item>
 
-            <el-form-item class='edit-form' 
+            <el-form-item
                 label="商品码" 
                 prop='Remark'>
                 <el-input 
@@ -135,12 +135,20 @@
                   :key="item.CuitMoon_DictionaryName"
                   :label="item.CuitMoon_DictionaryName"
                   :value="item.CuitMoon_DictionaryName">
-                
-                </el-option>    
-                  <!-- <span>{{ item.CuitMoon_DictionaryName}}</span> -->    
+                </el-option>      
                 </el-select>
             </el-form-item>
-           
+           <el-form-item 
+                      label="添加时间"
+                      prop='AddTime'>
+                   <!--  <el-col :span="24"> -->
+                    <el-date-picker
+                      v-model="product_data.AddTime"
+                      type="datetime"
+                      placeholder="选择日期时间">
+                    </el-date-picker>
+               <!--  </el-col> -->
+            </el-form-item>
             <el-form-item
                 label='产品描述'
                 prop='ProductDescription'>
@@ -155,7 +163,7 @@
                            @click='reBack()'>返回</el-button>
             </el-form-item>
         </el-form>
-
+    </div>
         <el-dialog title="产品信息" v-if="dialog.show" v-model="dialog.show">
             <el-form style="margin:20px;width:60%;min-width:100%; padding-right: 50px;"
                      label-width="100px"
@@ -178,17 +186,17 @@
                               <el-input
                         v-model="dialog.product_data.ProductTypeName" ></el-input>
                 </el-form-item>
-               <!--  <el-form-item class='edit-form'
+                <el-form-item class='edit-form'
                               label="添加时间"
                               prop='AddTime'>
-                    <el-col :span="24">
+                   <!--  <el-col :span="24"> -->
                     <el-date-picker
                       v-model="dialog.product_data.AddTime"
                       type="datetime"
                       placeholder="选择日期时间">
                     </el-date-picker>
-                </el-col>
-                </el-form-item> -->
+               <!--  </el-col> -->
+                </el-form-item>
 
                 <el-form-item class='edit-form'
                               label="描述"
@@ -223,6 +231,21 @@
     border:1px solid #e1e1e1;
 
 }
+.leftTree{
+  margin-left:-10px;
+  margin-right: 5px;
+}
+.el-tree{
+  border:2px solid #d1dbe5;
+}
+.el-tree-node__content:not(:last-child){
+  border-bottom: 1px solid #d1dbe5;
+  color: #1262da;
+  font-weight: bold;
+}
+.el-tree-node__content:last-child{
+  border:none;
+}
 .treeMenu{
     margin:0;
     padding:0;
@@ -250,16 +273,15 @@
         float: right;
         border:1px solid #f1f1f1;
         padding:5px;
-        min-height: 100%;
+        min-height: 550px;
         height:auto;
         padding-left: 10px;
         border-left:3px solid #324157;
 }
-    .demo-form-inline {
+  .demo-form-inline {
         display: inline-block;
         float: right;
     }
-
     .btm-action {
         margin-top: 20px;
         text-align: center;

@@ -83,9 +83,11 @@ module.exports = {
             this.search_data.NewsCategory = name;
             this.axios.post('/index.php?r=AuthCenter/news/get-news-group',{NewsCategory:name,pagesize:_this.pageSize,pagenum:1})
             .then((res)=>{
-                var hh = JSON.parse(res.request.response);  
-                _this.news_list = hh.data.news;
-                _this.totalNum = parseInt(hh.data.total);
+                var hh = JSON.parse(res.request.response); 
+                if(hh.status==200){
+                    _this.news_list = hh.data.news;
+                    _this.totalNum = parseInt(hh.data.total); 
+                } 
             });
             this.addChild = false;
         },
@@ -246,7 +248,7 @@ module.exports = {
         updateNews(news){
                 var _this = this;
                 var data = $('#newsContent').html();
-                _this.news_data.Text = data;
+                this.news_data.Text = data;
                 this.axios.post("/index.php?r=AuthCenter/news/update",_this.news_data)
                 .then((res) => {  
                 var hh = JSON.parse(res.request.response);
@@ -256,7 +258,8 @@ module.exports = {
                             message  : hh.msg,
                             type     : 'success'
                         });
-                       this.$router.push('/module/acManage/addNews');
+                        this.showChange = false;
+                        _this.totalNum = _this.totalNum-1;
                     }else{
                         this.$message({
                             showClose: true,
@@ -274,8 +277,10 @@ module.exports = {
             this.axios.post('/index.php?r=AuthCenter/news/get-all-news',{pagesize:_this.pageSize,pagenum:val})
             .then((res)=>{
             var hh = JSON.parse(res.request.response);
+            if(hh.status==200){
                 _this.totalNum = parseInt(hh.data.total);
                 _this.news_list = hh.data.news;
+            }
             });
         },
         getList() {

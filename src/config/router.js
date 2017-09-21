@@ -4,10 +4,22 @@ import {
 	NotFound,
 	Content,
 	Modules,
-	CodePage
+	CodePage,
+	HomePage,
+	ContentPg
 } from '../components/';
 
 module.exports = [{
+	path    : '/',
+	redirect: to => {
+		return 'homePage';
+	},
+	hidden  : true
+}, {
+	path     : '/homePage',
+	component: HomePage,
+	hidden   : true
+}, {
 	path    : '/',
 	redirect: to => {
 		return 'login';
@@ -27,7 +39,17 @@ module.exports = [{
 	path     : '/codePage',
 	component: CodePage,
 	hidden   : true
-},{
+}, {
+	path    : '/',
+	redirect: to => {
+		return 'contentPg';
+	},
+	hidden  : true
+}, {
+	path     : '/contentPg',
+	component: ContentPg,
+	hidden   : true
+}, {
 	path     : '/404',
 	component: Home,
 	hidden   : true,

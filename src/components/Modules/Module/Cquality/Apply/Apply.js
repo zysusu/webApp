@@ -27,8 +27,8 @@ module.exports = {
 	  	  	},
 			typeProps:{
 				children: 'child',
-	            label: 'CuitMoon_DictionaryName',
-				value: 'CuitMoon_DictionaryCode'
+	            label: 'name',
+				value: 'id'
 			},
 			productType:[],
 			Apply:{
@@ -88,7 +88,7 @@ module.exports = {
 				//产品类别
 				commodityType:[],
 				//申请类别
-				ApplyOriginType:"",
+				ApplyOriginType:1000161,
 				//标签数量
 				Number:""
 			},
@@ -101,9 +101,18 @@ module.exports = {
 				],
 				countermanPhone: [
 					{ required: true, message: '请输入业务电话', trigger: 'blur' },
+
 				],
 				countermanFax: [
 					{ required: true, message: '请输入商家邮箱', trigger: 'blur' },
+					{validator:(rule, value, callback)=>{
+                        if (!/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value)) {
+                            callback(new Error('邮箱格式不正确'));
+                        }else {
+                            callback();
+                        }
+                      }
+                	}
 				],
 				Address: [
 					{ required: true, message: '请输入通讯地址', trigger: 'blur' },
@@ -125,9 +134,28 @@ module.exports = {
 				],
 				Phone: [
 					{ required: true, message: '请输入手机', trigger: 'blur' },
+						{
+						 validator:(rule, value, callback)=>{
+	                        if (!/^[0-9]*$/.test(value)) {
+	                            callback(new Error('输入格式不正确，仅支持全数字'));
+	                        }else if(value.length!=11){
+	                            callback(new Error('输入的手机号应为11位'));
+	                        } else {
+	                            callback();
+	                        }
+	                    }
+                	}
 				],
 				Email: [
 					{ required: true, message: '请输入E-mail', trigger: 'blur' },
+					{validator:(rule, value, callback)=>{
+                        if (!/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value)) {
+                            callback(new Error('E-mail格式不正确'));
+                        }else {
+                            callback();
+                        }
+                    }
+                	}
 				],
 				counterMan: [
 					{ required: true, message: '请输入业务联系人', trigger: 'blur' },
@@ -190,6 +218,14 @@ module.exports = {
 				//标签数量
 				Number:[
 					{ required: true, message: '请输入标签数量', trigger: 'blur' },
+					{validator:(rule, value, callback)=>{
+                        if (isNaN(value)) {
+                            callback(new Error('请输入正整数！'));
+                        }else {
+                            callback();
+                        }
+                    }
+                	}
 				],
 			}
 		}
@@ -224,7 +260,10 @@ module.exports = {
 				.then((res)=>{
 					var hh = JSON.parse(res.request.response);
 					_this.Apply = hh.data;
-					_Apply.commodityType = [];
+					if(!hh.data.commodityType){
+						_this.commodityType = [];
+					}
+					_this.Apply.ApplyOriginType = 1000161;
 			});
 			}
 		},
@@ -305,19 +344,27 @@ module.exports = {
 		},
 
 		addCertificate(){
-			var self = this;
+			var _self = this;
 			var Businessqualification = this.Businessqualification;
 			this.axios.post("/index.php?r=ClimateQuality/authentication/add-certificate",{Businessqualification})
             .then((res) => {
             var hh = JSON.parse(res.request.response);
             if(hh.status===200){
-				self.getCertificate();
+				_self.getCertificate();
 				this.$message({
 
             		showClose: true,
             		message  : hh.msg,
             		type     : 'success'
             	});
+            	var initBusiness = {
+					Name:"",
+					awardTime:"",
+					publishUnit:"",
+					picUrl:"",
+				};
+				_self.Businessqualification = initBusiness;
+				_self.imageUrl = '';
             }else if(hh.status==404){
             	this.$message({
             		showClose: true,
@@ -330,11 +377,23 @@ module.exports = {
 		handleAvatarSuccess(res, file) {
         	this.imageUrl = URL.createObjectURL(file.raw);
 			this.Businessqualification.picUrl = res.data.url;
-			// alert(this.Businessqualification.picUrl);
 		},
 		getProductType(){
 			// productType
-			this.axios.post("/index.php?r=System/dic/get-dic-by-recursive",{CuitMoon_ParentDictionaryCode:'10005'})
+			/*this.axios.post("/index.php?r=System/dic/get-dic-by-recursive",{CuitMoon_ParentDictionaryCode:'10005'})
+            .then((res) => {
+            var hh = JSON.parse(res.request.response);
+            if(hh.status===200){
+				this.productType = hh.data;
+            }else if(hh.status==404){
+            	this.$message({
+            		showClose: true,
+            		message  : hh.msg,
+            		type     : 'error'
+            	});
+            }
+            });*/
+            this.axios.post("/index.php?r=ClimateQuality/authentication/get-models")
             .then((res) => {
             var hh = JSON.parse(res.request.response);
             if(hh.status===200){

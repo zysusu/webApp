@@ -25,12 +25,12 @@ module.exports = {
             checkFlag:true,
             user_list:{
                 CuitMoon_UserBirthday : '',
-                CuitMoon_AreaID:'',
+                CuitMoon_AreaID:[],
             },
             initUser : {
                 CuitMoon_UserName : '',
                 CuitMoon_UserPassWord : '',
-                CuitMoon_AreaID : '',
+                CuitMoon_AreaID : [],
                 CuitMoon_UserMSN : '',
                 CuitMoon_UserQQ : '',
                 CuitMoon_UserEmail : '',
@@ -194,7 +194,9 @@ module.exports = {
         },  
         showAdd(){
             this.add_flag = true;
+           // var initUser = 
             this.user_list = this.initUser;
+
             this.editFlag = false;
         },
         handleNodeClick(obj){
@@ -226,7 +228,6 @@ module.exports = {
                     _this.checkFlag = false;
                 }
             });
-
         },
         addUser(user){
             if(this.checkFlag){
@@ -236,7 +237,6 @@ module.exports = {
                     type     : 'error'
                 });
             }else{
-                user.CuitMoon_AreaID = user.CuitMoon_AreaID[2];
                 this.axios.post('/index.php?r=System/user/add-user',user)
                 .then((res)=>{
                     var hh = JSON.parse(res.request.response); 
@@ -498,14 +498,12 @@ module.exports = {
          * @param  {object} user 当前用户信息对象
          */
         onEditUser(user) {
-            this.add_flag = true;
+           this.add_flag = true;
            this.user_list = user;
            this.editFlag = true;
-           this.user_list.CuitMoon_AreaID = ''
-   },
-
+        },
         updateUser(newInfo){
-                 newInfo.CuitMoon_AreaID = newInfo.CuitMoon_AreaID[2];
+                //newInfo.CuitMoon_AreaID = newInfo.CuitMoon_AreaID[2];
                 this.axios.post('/index.php?r=System/user/update-user',newInfo)
                 .then((res)=>{
                     var hh = JSON.parse(res.request.response); 
@@ -515,7 +513,7 @@ module.exports = {
                             message  : hh.msg,
                             type     : 'success'
                         });
-                     window.location.reload();
+                     this.add_flag = false;
                     }else{
                         this.$message({
                             showClose: true,
